@@ -2,10 +2,10 @@ import java.util.Objects;
 import java.util.StringJoiner;
 
 public class Task {
-    private String name;
-    private String description;
-    private StatusTask status;
-    private int id;
+    protected String name;
+    protected String description;
+    protected StatusTask status;
+    protected int id;
 
     public Task(String name, String description) {
         this.name = name;
@@ -48,10 +48,10 @@ public class Task {
     @Override
     public String toString() {
         return new StringJoiner(", ", this.getClass().getTypeName() + "[", "]")
+                .add("id=" + id)
                 .add("name='" + name + "'")
                 .add("description='" + description + "'")
                 .add("status=" + status)
-                .add("id=" + id)
                 .toString();
     }
 
