@@ -25,6 +25,14 @@ public class Epic extends Task {
         }
     }
 
+    public void removeSubtask(int subtaskId) {
+        subtasks.remove(subtaskId);
+    }
+
+    public void clearSubtasks() {
+        subtasks.clear();
+    }
+
     public HashMap<Integer, Subtask> getSubtasks() {
         return subtasks;
     }

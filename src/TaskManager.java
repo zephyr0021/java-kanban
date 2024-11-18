@@ -1,9 +1,10 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TaskManager {
-    private static HashMap<Integer, Task> tasks = new HashMap<>();
-    private static HashMap<Integer, Subtask> subtasks = new HashMap<>();
-    private static HashMap<Integer, Epic> epics = new HashMap<>();
+    private static final HashMap<Integer, Task> tasks = new HashMap<>();
+    private static final HashMap<Integer, Subtask> subtasks = new HashMap<>();
+    private static final HashMap<Integer, Epic> epics = new HashMap<>();
     private static int taskId = 0;
 
     public static HashMap<Integer, Task> getTasks() {
@@ -31,7 +32,14 @@ public class TaskManager {
     }
 
     public static HashMap<Integer, Subtask> getEpicSubtasks(int epicId) {
-        return getEpic(epicId).getSubtasks();
+        Epic epic = getEpic(epicId);
+        if (epic != null) {
+            return epic.getSubtasks();
+        } else {
+            System.out.println("Эпик не найден!");
+            return null;
+
+        }
     }
 
     private static boolean checkContainsTask(Task task) {
@@ -90,6 +98,37 @@ public class TaskManager {
             System.out.println("Данный эпик уже существует в списке!");
         }
     }
+
+    public static void deleteTask(int id) {
+        tasks.remove(id);
+    }
+
+    public static void deleteSubtask(int id) {
+        Subtask subtask = subtasks.get(id);
+        if (subtask != null) {
+            Epic epic = epics.get(subtask.getEpicId());
+            epic.removeSubtask(id);
+        }
+        subtasks.remove(id);
+    }
+
+    public static void deleteEpic(int id) {
+        Epic epic = epics.get(id);
+        if (epic != null) {
+            // Такой костыль получился, потому что нельзя одновременно пробежаться по hashmap и удалять элементы
+            HashMap<Integer, Subtask> epicSubtasks = epic.getSubtasks();
+            ArrayList<Integer> keys = new ArrayList<>(epicSubtasks.keySet());
+
+            for (Integer key : keys) {
+                deleteSubtask(key);
+            }
+
+
+
+        }
+        epics.remove(id);
+    }
+
 
 
 
