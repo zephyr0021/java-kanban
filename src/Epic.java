@@ -4,8 +4,8 @@ import java.util.StringJoiner;
 public class Epic extends Task {
     private HashMap<Integer, Subtask> subtasks;
 
-    public Epic(String name, String description) {
-        super(name, description);
+    public Epic(String name, String description, StatusTask status) {
+        super(name, description, status);
         subtasks = new HashMap<>();
     }
 

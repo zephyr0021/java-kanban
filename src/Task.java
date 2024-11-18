@@ -7,10 +7,10 @@ public class Task {
     protected StatusTask status;
     protected int id;
 
-    public Task(String name, String description) {
+    public Task(String name, String description, StatusTask status) {
         this.name = name;
         this.description = description;
-        this.status = StatusTask.NEW;
+        this.status = status;
     }
 
     public String getName() {

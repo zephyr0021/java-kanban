@@ -2,9 +2,11 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
-        TaskManager.addTask(new Task("Сдать домашку", "Ну надо"));
-        TaskManager.addEpic(new Epic("Идеальный эпик", "Большой эпик"));
-        TaskManager.addSubtask(new Subtask("Сделать другое", "Ну не очень надо"), 2);
+        TaskManager.addTask(new Task("Сдать домашку", "Ну надо", StatusTask.NEW));
+        TaskManager.addSubtask(new Subtask("Сделать другое", "Ну не очень надо", StatusTask.NEW), 2);
+        TaskManager.addEpic(new Epic("Идеальный эпик", "Большой эпик", StatusTask.NEW));
+        TaskManager.addSubtask(new Subtask("Сделать другое", "Ну не очень надо", StatusTask.NEW), 2);
+        TaskManager.addSubtask(new Subtask("Сделать другое2", "Ну не очень надо", StatusTask.NEW), 2);
         for (Integer key : TaskManager.getTasks().keySet()) {
             System.out.println(TaskManager.getTasks().get(key));
         }

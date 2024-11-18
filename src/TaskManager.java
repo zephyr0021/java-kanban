@@ -66,13 +66,18 @@ public class TaskManager {
     }
 
     public static void addSubtask(Subtask subtask, int epicId) {
-        if (checkContainsSubtask(subtask)) {
-            taskId++;
-            subtask.setId(taskId);
-            tasks.put(taskId, subtask);
-            getEpic(epicId).addSubtask(subtask);
+        Epic epic = getEpic(epicId);
+        if (epic != null) {
+            if (checkContainsSubtask(subtask)) {
+                taskId++;
+                subtask.setId(taskId);
+                subtasks.put(taskId, subtask);
+                epic.addSubtask(subtask);
+            } else {
+                System.out.println("Данная подзадача уже существует в списке!");
+            }
         } else {
-            System.out.println("Данная подзадача уже существует в списке!");
+            System.out.println("Эпик не существует. Подзадачу невозможно создать без эпика");
         }
     }
 
