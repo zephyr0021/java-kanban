@@ -1,39 +1,35 @@
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.StringJoiner;
 
 public class Epic extends Task {
-    private HashMap<Integer, Subtask> subtasks;
+    private final ArrayList<Integer> subtasks;
 
     public Epic(String name, String description, StatusTask status) {
         super(name, description, status);
-        subtasks = new HashMap<>();
+        subtasks = new ArrayList<>();
     }
 
-    private boolean checkContainsSubtask(Subtask subtask) {
+    private boolean checkNotContainsSubtask(Subtask subtask) {
         if (subtask == null) {
             return false;
         }
-        return !subtasks.containsKey(subtask.getId());
+        return !subtasks.contains(subtask.getId());
     }
 
     public void addSubtask(Subtask subtask) {
-        if (checkContainsSubtask(subtask)) {
-            subtasks.put(subtask.getId(), subtask);
+        if (checkNotContainsSubtask(subtask)) {
+            subtasks.add(subtask.getId());
             subtask.setEpicId(this.id);
         } else {
             System.out.println("Данная подзадача уже существует в списке");
         }
     }
 
-    public void removeSubtask(int subtaskId) {
+    public void removeSubtask(Integer subtaskId) {
         subtasks.remove(subtaskId);
     }
 
-    public void clearSubtasks() {
-        subtasks.clear();
-    }
-
-    public HashMap<Integer, Subtask> getSubtasks() {
+    public ArrayList<Integer> getSubtasksIds() {
         return subtasks;
     }
 
