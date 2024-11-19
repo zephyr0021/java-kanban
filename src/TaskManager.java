@@ -117,21 +117,37 @@ public class TaskManager {
         if (epic != null) {
             // Такой костыль получился, потому что нельзя одновременно пробежаться по hashmap и удалять элементы
             HashMap<Integer, Subtask> epicSubtasks = epic.getSubtasks();
-            ArrayList<Integer> keys = new ArrayList<>(epicSubtasks.keySet());
+            ArrayList<Integer> subtasksIds = new ArrayList<>(epicSubtasks.keySet());
 
-            for (Integer key : keys) {
-                deleteSubtask(key);
+            for (Integer subtaskId : subtasksIds) {
+                deleteSubtask(subtaskId);
             }
-
-
-
         }
         epics.remove(id);
+
+
     }
 
+    public static void clearTasks() {
+        tasks.clear();
+    }
 
+    public static void clearSubtasks() {
+        // Такой костыль получился, потому что нельзя одновременно пробежаться по hashmap и удалять элементы
+        ArrayList<Integer> subtasksIds = new ArrayList<>(subtasks.keySet());
 
+        for (Integer subtaskId : subtasksIds) {
+            deleteSubtask(subtaskId);
+        }
+    }
 
+    public static void clearEpics() {
+        // Такой костыль получился, потому что нельзя одновременно пробежаться по hashmap и удалять элементы
+        ArrayList<Integer> epicsIds = new ArrayList<>(epics.keySet());
 
+        for (Integer epicId : epicsIds) {
+            deleteEpic(epicId);
+        }
+    }
 
 }

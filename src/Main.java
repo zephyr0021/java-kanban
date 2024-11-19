@@ -25,9 +25,10 @@ public class Main {
             System.out.println(TaskManager.getSubtasks().get(key));
         }
 
-        TaskManager.deleteEpic(2);
-        TaskManager.deleteTask(1);
-        TaskManager.deleteSubtask(7);
+//        TaskManager.deleteEpic(2);
+//        TaskManager.deleteTask(1);
+//        TaskManager.deleteSubtask(7);
+          TaskManager.clearSubtasks();
         for (Integer key : TaskManager.getTasks().keySet()) {
             System.out.println(TaskManager.getTasks().get(key));
         }
@@ -40,7 +41,7 @@ public class Main {
             System.out.println(TaskManager.getSubtasks().get(key));
         }
 
-        for (Integer key : TaskManager.getEpicSubtasks(3).keySet()) {
+        for (Integer key : TaskManager.getEpicSubtasks(2).keySet()) {
             System.out.println(TaskManager.getEpicSubtasks(3).get(key));
         }
 
