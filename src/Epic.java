@@ -2,12 +2,18 @@ import java.util.ArrayList;
 import java.util.StringJoiner;
 
 public class Epic extends Task {
-    private final ArrayList<Integer> subtasks;
+    private ArrayList<Integer> subtasks;
 
-    public Epic(String name, String description, StatusTask status) {
-        super(name, description, status);
-        subtasks = new ArrayList<>();
+    public Epic(String name, String description, int id) {
+        super(name, description, id);
+        this.subtasks = new ArrayList<>();
     }
+
+    public Epic(String name, String description) {
+        super(name, description);
+        this.subtasks = new ArrayList<>();
+    }
+
 
     private boolean checkNotContainsSubtask(Subtask subtask) {
         if (subtask == null) {
@@ -29,8 +35,20 @@ public class Epic extends Task {
         subtasks.remove(subtaskId);
     }
 
+    public void clearSubtaskList() {
+        subtasks.clear();
+    }
+
     public ArrayList<Integer> getSubtasksIds() {
         return subtasks;
+    }
+
+    public ArrayList<Integer> getSubtasks() {
+        return subtasks;
+    }
+
+    public void setSubtasks(ArrayList<Integer> subtasks) {
+        this.subtasks = subtasks;
     }
 
     @Override
