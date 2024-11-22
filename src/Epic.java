@@ -14,14 +14,6 @@ public class Epic extends Task {
         this.subtasks = new ArrayList<>();
     }
 
-
-    private boolean checkNotContainsSubtask(Subtask subtask) {
-        if (subtask == null) {
-            return false;
-        }
-        return !subtasks.contains(subtask.getId());
-    }
-
     public void addSubtask(Subtask subtask) {
         if (checkNotContainsSubtask(subtask)) {
             subtasks.add(subtask.getId());
@@ -56,5 +48,12 @@ public class Epic extends Task {
                 .add("subtasks size=" + subtasks.size())
                 .add("status=" + status)
                 .toString();
+    }
+
+    private boolean checkNotContainsSubtask(Subtask subtask) {
+        if (subtask == null) {
+            return false;
+        }
+        return !subtasks.contains(subtask.getId());
     }
 }

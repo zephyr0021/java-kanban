@@ -46,27 +46,6 @@ public class TaskManager {
         }
     }
 
-    private boolean checkNotContainsTask(Task task) {
-        if (task == null) {
-            return false;
-        }
-        return !tasks.containsKey(task.getId()) && task.getId() == 0;
-    }
-
-    private boolean checkNotContainsSubtask(Subtask subtask) {
-        if (subtask == null) {
-            return false;
-        }
-        return !subtasks.containsKey(subtask.getId()) && subtask.getId() == 0;
-    }
-
-    private boolean checkNotContainsEpic(Epic epic) {
-        if (epic == null) {
-            return false;
-        }
-        return !epics.containsKey(epic.getId()) && epic.getId() == 0;
-    }
-
     public void addTask(Task task) {
         if (checkNotContainsTask(task)) {
             taskId++;
@@ -180,6 +159,27 @@ public class TaskManager {
         epics.put(id, epic);
     }
 
+    private boolean checkNotContainsTask(Task task) {
+        if (task == null) {
+            return false;
+        }
+        return !tasks.containsKey(task.getId()) && task.getId() == 0;
+    }
+
+    private boolean checkNotContainsSubtask(Subtask subtask) {
+        if (subtask == null) {
+            return false;
+        }
+        return !subtasks.containsKey(subtask.getId()) && subtask.getId() == 0;
+    }
+
+    private boolean checkNotContainsEpic(Epic epic) {
+        if (epic == null) {
+            return false;
+        }
+        return !epics.containsKey(epic.getId()) && epic.getId() == 0;
+    }
+
     private void updateEpicStatus(int epicId) {
         Epic epic = getEpic(epicId);
         int countNewStatusPoints = 0;
@@ -200,6 +200,5 @@ public class TaskManager {
         }
 
     }
-
 
 }
