@@ -1,6 +1,3 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -24,19 +21,17 @@ public class Main {
             System.out.println(epic);
         }
         System.out.println("Подазадачи эпика - Написать курсовую работу");
-        for (Integer key : taskManager.getEpicSubtasks(2)) {
-            System.out.println(taskManager.getSubtask(key));
+        for (Subtask subtask : taskManager.getEpicSubtasks(2)) {
+            System.out.println(subtask);
         }
         System.out.println("Подзадачи эпика - Покрасить волосы");
-        for (Integer key : taskManager.getEpicSubtasks(7)) {
-            System.out.println(taskManager.getSubtask(key));
+        for (Subtask subtask : taskManager.getEpicSubtasks(7)) {
+            System.out.println(subtask);
         }
 
         taskManager.updateSubtask(new Subtask("Собрать теоретическую часть", "Искать в интернете", StatusTask.DONE,2, 3));
         taskManager.updateSubtask(new Subtask("Купить краску", "Для выступления", StatusTask.IN_PROGRESS, 7, 8));
         taskManager.deleteSubtask(4);
-//        taskManager.deleteEpic(7);
-//        taskManager.addSubtask(new Subtask("Сходить в парикмахерскую","Парикмахерская перед домом", StatusTask.NEW, 7));
         System.out.println();
         System.out.println("После выполнения работ!");
         System.out.println("Эпики:");
@@ -44,12 +39,12 @@ public class Main {
             System.out.println(epic);
         }
         System.out.println("Подазадачи эпика - Написать курсовую работу");
-        for (Integer key : taskManager.getEpicSubtasks(2)) {
-            System.out.println(taskManager.getSubtask(key));
+        for (Subtask subtask : taskManager.getEpicSubtasks(2)) {
+            System.out.println(subtask);
         }
         System.out.println("Подзадачи эпика - Покрасить волосы");
-        for (Integer key : taskManager.getEpicSubtasks(7)) {
-            System.out.println(taskManager.getSubtask(key));
+        for (Subtask subtask : taskManager.getEpicSubtasks(7)) {
+            System.out.println(subtask);
         }
 
         System.out.println("Обновляем эпик");
@@ -58,8 +53,8 @@ public class Main {
             System.out.println(epic);
         }
         System.out.println("Подзадачи эпика - Покрасить волосы");
-        for (Integer key : taskManager.getEpicSubtasks(7)) {
-            System.out.println(taskManager.getSubtask(key));
+        for (Subtask subtask : taskManager.getEpicSubtasks(7)) {
+            System.out.println(subtask);
         }
 
     }
