@@ -1,4 +1,7 @@
+package tasks;
+
 import java.util.StringJoiner;
+import statuses.StatusTask;
 
 public class Subtask extends Task {
     private int epicId;

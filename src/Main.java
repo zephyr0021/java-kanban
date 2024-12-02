@@ -1,61 +1,94 @@
+import statuses.*;
+import managers.InMemoryTaskManager;
+import managers.TaskManager;
+import tasks.*;
+import util.Managers;
+
 public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
-        TaskManager taskManager = new TaskManager();
-        taskManager.addTask(new Task("Выгулять собаку", "Погулять с Джеком 20 минут"));
-        taskManager.addEpic(new Epic("Написать курсовую работу", "Написать курсовую по теме Маркетинг"));
-        taskManager.addSubtask(new Subtask("Собрать теоретическую часть", "Искать в интернете",2));
-        taskManager.addSubtask(new Subtask("Сформировать содержание", "Автоматически",2));
-        taskManager.addSubtask(new Subtask("Выполнить практическую часть", "Провести игру", 2));
-        taskManager.addSubtask(new Subtask("Оформить реферат", "Для выступления", 2));
-        taskManager.addEpic(new Epic("Покрасить волосы", "На праздник"));
-        taskManager.addSubtask(new Subtask("Купить краску", "Для выступления", 7));
+        TaskManager inMemoryTaskManager = Managers.getDefault();
+        inMemoryTaskManager.addTask(new Task("Выгулять собаку", "Погулять с Джеком 20 минут"));
+        inMemoryTaskManager.addEpic(new Epic("Написать курсовую работу", "Написать курсовую по теме Маркетинг"));
+        inMemoryTaskManager.addSubtask(new Subtask("Собрать теоретическую часть", "Искать в интернете",2));
+        inMemoryTaskManager.addSubtask(new Subtask("Сформировать содержание", "Автоматически",2));
+        inMemoryTaskManager.addSubtask(new Subtask("Выполнить практическую часть", "Провести игру", 2));
+        inMemoryTaskManager.addSubtask(new Subtask("Оформить реферат", "Для выступления", 2));
+        inMemoryTaskManager.addEpic(new Epic("Покрасить волосы", "На праздник"));
+        inMemoryTaskManager.addSubtask(new Subtask("Купить краску", "Для выступления", 7));
 
+        printAllTasks(inMemoryTaskManager);
+    }
+
+    private static void printWorkingExample(TaskManager manager) {
         System.out.println("Задачи: ");
-        for (Task task: taskManager.getTasks()) {
+        for (Task task: manager.getTasks()) {
             System.out.println(task);
         }
         System.out.println("Эпики:");
-        for (Epic epic : taskManager.getEpics()) {
+        for (Epic epic : manager.getEpics()) {
             System.out.println(epic);
         }
         System.out.println("Подазадачи эпика - Написать курсовую работу");
-        for (Subtask subtask : taskManager.getEpicSubtasks(2)) {
+        for (Subtask subtask : manager.getEpicSubtasks(2)) {
             System.out.println(subtask);
         }
         System.out.println("Подзадачи эпика - Покрасить волосы");
-        for (Subtask subtask : taskManager.getEpicSubtasks(7)) {
+        for (Subtask subtask : manager.getEpicSubtasks(7)) {
             System.out.println(subtask);
         }
 
-        taskManager.updateSubtask(new Subtask("Собрать теоретическую часть", "Искать в интернете", StatusTask.DONE,2, 3));
-        taskManager.updateSubtask(new Subtask("Купить краску", "Для выступления", StatusTask.IN_PROGRESS, 7, 8));
-        taskManager.deleteSubtask(4);
+        manager.updateSubtask(new Subtask("Собрать теоретическую часть", "Искать в интернете", StatusTask.DONE,2, 3));
+        manager.updateSubtask(new Subtask("Купить краску", "Для выступления", StatusTask.IN_PROGRESS, 7, 8));
+        manager.deleteSubtask(4);
         System.out.println();
         System.out.println("После выполнения работ!");
         System.out.println("Эпики:");
-        for (Epic epic : taskManager.getEpics()) {
+        for (Epic epic : manager.getEpics()) {
             System.out.println(epic);
         }
         System.out.println("Подазадачи эпика - Написать курсовую работу");
-        for (Subtask subtask : taskManager.getEpicSubtasks(2)) {
+        for (Subtask subtask : manager.getEpicSubtasks(2)) {
             System.out.println(subtask);
         }
         System.out.println("Подзадачи эпика - Покрасить волосы");
-        for (Subtask subtask : taskManager.getEpicSubtasks(7)) {
+        for (Subtask subtask : manager.getEpicSubtasks(7)) {
             System.out.println(subtask);
         }
 
         System.out.println("Обновляем эпик");
-        taskManager.updateEpic(new Epic("Покрасить волосы", "На праздник (обновлен)", 7));
-        for (Epic epic : taskManager.getEpics()) {
+        manager.updateEpic(new Epic("Покрасить волосы", "На праздник (обновлен)", 7));
+        for (Epic epic : manager.getEpics()) {
             System.out.println(epic);
         }
         System.out.println("Подзадачи эпика - Покрасить волосы");
-        for (Subtask subtask : taskManager.getEpicSubtasks(7)) {
+        for (Subtask subtask : manager.getEpicSubtasks(7)) {
+            System.out.println(subtask);
+        }
+    }
+
+    private static void printAllTasks(TaskManager manager) {
+        System.out.println("Задачи:");
+        for (Task task : manager.getTasks()) {
+            System.out.println(task);
+        }
+        System.out.println("Эпики:");
+        for (Task epic : manager.getEpics()) {
+            System.out.println(epic);
+
+            for (Task task : manager.getEpicSubtasks(epic.getId())) {
+                System.out.println("--> " + task);
+            }
+        }
+        System.out.println("Подзадачи:");
+        for (Task subtask : manager.getSubtasks()) {
             System.out.println(subtask);
         }
 
+        System.out.println("История:");
+        for (Task task : manager.getHistory()) {
+            System.out.println(task);
+        }
     }
 }

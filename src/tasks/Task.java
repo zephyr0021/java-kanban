@@ -1,3 +1,6 @@
+package tasks;
+
+import statuses.StatusTask;
 import java.util.Objects;
 import java.util.StringJoiner;
 
