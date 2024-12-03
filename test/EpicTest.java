@@ -5,8 +5,6 @@ import statuses.StatusTask;
 import tasks.Epic;
 import tasks.Subtask;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class EpicTest {
 
     Epic epic;
