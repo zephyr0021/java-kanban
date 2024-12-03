@@ -17,11 +17,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public ArrayList<Task> getTasks() {
-        ArrayList<Task> tasksList = new ArrayList<>(tasks.values());
-        for (Task task : tasksList) {
-            historyManager.add(task);
-        }
-        return tasksList;
+        return new ArrayList<>(tasks.values());
     }
 
     @Override
@@ -33,11 +29,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public ArrayList<Subtask> getSubtasks() {
-        ArrayList<Subtask> subtasksList = new ArrayList<>(subtasks.values());
-        for (Subtask subtask : subtasksList) {
-            historyManager.add(subtask);
-        }
-        return subtasksList;
+        return new ArrayList<>(subtasks.values());
     }
 
     @Override
@@ -49,11 +41,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public ArrayList<Epic> getEpics() {
-        ArrayList<Epic> epicsList = new ArrayList<>(epics.values());
-        for (Epic epic : epicsList) {
-            historyManager.add(epic);
-        }
-        return epicsList;
+        return new ArrayList<>(epics.values());
     }
 
     @Override
@@ -66,12 +54,12 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public ArrayList<Subtask> getEpicSubtasks(int epicId) {
         Epic epic = epics.get(epicId);
-        ArrayList<Subtask> subtasks = new ArrayList<>();
+        ArrayList<Subtask> epicSubtasks = new ArrayList<>();
         if (epic != null) {
             for (Integer subtaskId : epic.getSubtasks()) {
-                subtasks.add(subtasks.get(subtaskId));
+                epicSubtasks.add(subtasks.get(subtaskId));
             }
-            return subtasks;
+            return epicSubtasks;
         } else {
             System.out.println("Эпик не найден!");
             return null;

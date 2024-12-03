@@ -9,19 +9,20 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Поехали!");
         TaskManager inMemoryTaskManager = Managers.getDefault();
-        inMemoryTaskManager.addTask(new Task("Выгулять собаку", "Погулять с Джеком 20 минут"));
-        inMemoryTaskManager.addEpic(new Epic("Написать курсовую работу", "Написать курсовую по теме Маркетинг"));
-        inMemoryTaskManager.addSubtask(new Subtask("Собрать теоретическую часть", "Искать в интернете",2));
-        inMemoryTaskManager.addSubtask(new Subtask("Сформировать содержание", "Автоматически",2));
-        inMemoryTaskManager.addSubtask(new Subtask("Выполнить практическую часть", "Провести игру", 2));
-        inMemoryTaskManager.addSubtask(new Subtask("Оформить реферат", "Для выступления", 2));
-        inMemoryTaskManager.addEpic(new Epic("Покрасить волосы", "На праздник"));
-        inMemoryTaskManager.addSubtask(new Subtask("Купить краску", "Для выступления", 7));
-
+        TaskManager inMemoryTaskManager2 = Managers.getDefault();
         printAllTasks(inMemoryTaskManager);
+        printWorkingExample(inMemoryTaskManager2);
     }
 
     private static void printWorkingExample(TaskManager manager) {
+        manager.addTask(new Task("Выгулять собаку", "Погулять с Джеком 20 минут"));
+        manager.addEpic(new Epic("Написать курсовую работу", "Написать курсовую по теме Маркетинг"));
+        manager.addSubtask(new Subtask("Собрать теоретическую часть", "Искать в интернете",2));
+        manager.addSubtask(new Subtask("Сформировать содержание", "Автоматически",2));
+        manager.addSubtask(new Subtask("Выполнить практическую часть", "Провести игру", 2));
+        manager.addSubtask(new Subtask("Оформить реферат", "Для выступления", 2));
+        manager.addEpic(new Epic("Покрасить волосы", "На праздник"));
+        manager.addSubtask(new Subtask("Купить краску", "Для выступления", 7));
         System.out.println("Задачи: ");
         for (Task task: manager.getTasks()) {
             System.out.println(task);
@@ -69,6 +70,14 @@ public class Main {
     }
 
     private static void printAllTasks(TaskManager manager) {
+        manager.addTask(new Task("Выгулять собаку", "Погулять с Джеком 20 минут"));
+        manager.addEpic(new Epic("Написать курсовую работу", "Написать курсовую по теме Маркетинг"));
+        manager.addSubtask(new Subtask("Собрать теоретическую часть", "Искать в интернете",2));
+        manager.addSubtask(new Subtask("Сформировать содержание", "Автоматически",2));
+        manager.addSubtask(new Subtask("Выполнить практическую часть", "Провести игру", 2));
+        manager.addSubtask(new Subtask("Оформить реферат", "Для выступления", 2));
+        manager.addEpic(new Epic("Покрасить волосы", "На праздник"));
+        manager.addSubtask(new Subtask("Купить краску", "Для выступления", 7));
         System.out.println("Задачи:");
         for (Task task : manager.getTasks()) {
             System.out.println(task);
