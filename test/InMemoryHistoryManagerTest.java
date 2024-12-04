@@ -79,5 +79,11 @@ public class InMemoryHistoryManagerTest {
         Assertions.assertEquals(subtask12, manager.getHistory().getLast());
     }
 
+    @Test
+    public void negativeAddNullInHistory() {
+        manager.add(null);
+        Assertions.assertTrue(manager.getHistory().isEmpty());
+    }
+
 
 }
