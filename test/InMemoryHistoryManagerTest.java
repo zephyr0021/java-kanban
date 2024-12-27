@@ -68,14 +68,14 @@ public class InMemoryHistoryManagerTest {
 
         manager.add(subtask11);
 
-        Assertions.assertEquals(10, manager.getHistory().size());
-        Assertions.assertEquals(task2, manager.getHistory().getFirst());
+        Assertions.assertEquals(11, manager.getHistory().size());
+        Assertions.assertEquals(task1, manager.getHistory().getFirst());
         Assertions.assertEquals(subtask11, manager.getHistory().getLast());
 
         manager.add(subtask12);
 
-        Assertions.assertEquals(10, manager.getHistory().size());
-        Assertions.assertEquals(task3, manager.getHistory().getFirst());
+        Assertions.assertEquals(12, manager.getHistory().size());
+        Assertions.assertEquals(task1, manager.getHistory().getFirst());
         Assertions.assertEquals(subtask12, manager.getHistory().getLast());
     }
 

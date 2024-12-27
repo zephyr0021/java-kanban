@@ -274,8 +274,8 @@ public class InMemoryTaskManagerTest {
         manager.getSubtask(9);
         manager.getSubtask(12);
         manager.getSubtask(11);
-        Assertions.assertEquals(10, manager.getHistory().size());
-        Assertions.assertEquals(epic1, manager.getHistory().getFirst());
+        Assertions.assertEquals(11, manager.getHistory().size());
+        Assertions.assertEquals(task1, manager.getHistory().getFirst());
         Assertions.assertEquals(subtask5, manager.getHistory().getLast());
     }
 }
