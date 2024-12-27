@@ -9,10 +9,11 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Поехали!");
         TaskManager inMemoryTaskManager = Managers.getDefault();
-        TaskManager inMemoryTaskManager2 = Managers.getDefault();
+//        TaskManager inMemoryTaskManager2 = Managers.getDefault();
 //        printAllTasks(inMemoryTaskManager);
 //        printWorkingExample(inMemoryTaskManager2);
-        printHistoryWorkExample(inMemoryTaskManager);
+//        printHistoryWorkExample(inMemoryTaskManager);
+          printHistoryDeleteTaskWorkExample(inMemoryTaskManager);
     }
 
     private static void printWorkingExample(TaskManager manager) {
@@ -120,5 +121,70 @@ public class Main {
         for (Task task : manager.getHistory()) {
             System.out.println(task);
         }
+    }
+
+    private static void printHistoryDeleteTaskWorkExample(TaskManager manager) {
+        manager.addTask(new Task("Выгулять собаку", "Погулять с Джеком 20 минут"));
+        manager.addTask(new Task("Сделать ДЗ", "Сделать ДЗ за 1 час"));
+        manager.addEpic(new Epic("Написать курсовую работу", "Написать курсовую по теме Маркетинг"));
+        manager.addSubtask(new Subtask("Собрать теоретическую часть", "Искать в интернете",3));
+        manager.addSubtask(new Subtask("Сформировать содержание", "Автоматически",3));
+        manager.addSubtask(new Subtask("Выполнить практическую часть", "Провести игру", 3));
+        manager.addEpic(new Epic("Сделать проект по 6 спринту яндекс", "Выполнить все подзадачи"));
+        System.out.println("История:");
+        for (Task task : manager.getHistory()) {
+            System.out.println(task);
+        }
+        manager.getTask(2);
+        System.out.println("История:");
+        for (Task task : manager.getHistory()) {
+            System.out.println(task);
+        }
+        manager.getEpic(3);
+        System.out.println("История:");
+        for (Task task : manager.getHistory()) {
+            System.out.println(task);
+        }
+        manager.getEpic(7);
+        System.out.println("История:");
+        for (Task task : manager.getHistory()) {
+            System.out.println(task);
+        }
+        manager.getTask(1);
+        System.out.println("История:");
+        for (Task task : manager.getHistory()) {
+            System.out.println(task);
+        }
+        manager.getSubtask(4);
+        System.out.println("История:");
+        for (Task task : manager.getHistory()) {
+            System.out.println(task);
+        }
+        manager.getSubtask(6);
+        System.out.println("История:");
+        for (Task task : manager.getHistory()) {
+            System.out.println(task);
+        }
+        manager.getEpic(2);
+        System.out.println("История:");
+        for (Task task : manager.getHistory()) {
+            System.out.println(task);
+        }
+
+        manager.deleteTask(1);
+        System.out.println("История:");
+        for (Task task : manager.getHistory()) {
+            System.out.println(task);
+        }
+        manager.deleteEpic(3);
+        System.out.println("История:");
+        for (Task task : manager.getHistory()) {
+            System.out.println(task);
+        }
+
+
+
+
+
     }
 }
