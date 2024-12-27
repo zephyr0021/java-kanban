@@ -10,8 +10,9 @@ public class Main {
         System.out.println("Поехали!");
         TaskManager inMemoryTaskManager = Managers.getDefault();
         TaskManager inMemoryTaskManager2 = Managers.getDefault();
-        printAllTasks(inMemoryTaskManager);
-        printWorkingExample(inMemoryTaskManager2);
+//        printAllTasks(inMemoryTaskManager);
+//        printWorkingExample(inMemoryTaskManager2);
+        printHistoryWorkExample(inMemoryTaskManager);
     }
 
     private static void printWorkingExample(TaskManager manager) {
@@ -95,6 +96,26 @@ public class Main {
             System.out.println(subtask);
         }
 
+        System.out.println("История:");
+        for (Task task : manager.getHistory()) {
+            System.out.println(task);
+        }
+    }
+
+    private static void printHistoryWorkExample(TaskManager manager) {
+        manager.addTask(new Task("Выгулять собаку", "Погулять с Джеком 20 минут"));
+        manager.addEpic(new Epic("Написать курсовую работу", "Написать курсовую по теме Маркетинг"));
+        manager.addSubtask(new Subtask("Собрать теоретическую часть", "Искать в интернете",2));
+        manager.addSubtask(new Subtask("Сформировать содержание", "Автоматически",2));
+        manager.addSubtask(new Subtask("Выполнить практическую часть", "Провести игру", 2));
+        manager.addSubtask(new Subtask("Оформить реферат", "Для выступления", 2));
+        manager.getTask(1);
+        manager.getTask(1);
+        manager.getTask(1);
+        manager.getEpic(2);
+        manager.getSubtask(3);
+        manager.getEpic(2);
+        manager.getSubtask(3);
         System.out.println("История:");
         for (Task task : manager.getHistory()) {
             System.out.println(task);
