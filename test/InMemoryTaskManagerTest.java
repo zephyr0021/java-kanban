@@ -278,4 +278,39 @@ public class InMemoryTaskManagerTest {
         Assertions.assertEquals(task1, manager.getHistory().getFirst());
         Assertions.assertEquals(subtask5, manager.getHistory().getLast());
     }
+
+    @Test
+    public void deleteTaskdeleteTaskInHistory() {
+        manager.addTask(task1);
+        manager.addTask(task2);
+        manager.addEpic(epic1);
+        manager.addEpic(epic2);
+        subtask2 = new Subtask("TestName2", "TestDescription2", epic1.getId());
+        subtask3 = new Subtask("TestName3", "TestDescription3", epic1.getId());
+        subtask4 = new Subtask("TestName4", "TestDescription4", epic2.getId());
+        subtask5 = new Subtask("TestName5", "TestDescription5", epic2.getId());
+        manager.addSubtask(subtask2);
+        manager.addSubtask(subtask3);
+        manager.addSubtask(subtask4);
+        manager.addSubtask(subtask5);
+        ArrayList<Task> expectedHistory = new ArrayList<>();
+        expectedHistory.add(task1);
+        expectedHistory.add(subtask4);
+        expectedHistory.add(subtask5);
+
+        manager.getTask(1);
+        manager.getTask(2);
+        manager.getEpic(3);
+        manager.getSubtask(5);
+        manager.getSubtask(6);
+        manager.getSubtask(7);
+        manager.getSubtask(8);
+
+        Assertions.assertEquals(7, manager.getHistory().size());
+
+        manager.deleteEpic(3);
+        manager.deleteTask(2);
+        Assertions.assertEquals(3, manager.getHistory().size());
+        Assertions.assertEquals(expectedHistory, manager.getHistory());
+    }
 }
