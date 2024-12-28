@@ -71,6 +71,7 @@ public class InMemoryTaskManager implements TaskManager {
     public List<Task> getHistory() {
         return historyManager.getHistory();
     }
+
     @Override
     public void addTask(Task task) {
         if (checkNotContainsTask(task)) {
