@@ -31,6 +31,7 @@ public class InMemoryTaskManagerTest {
         task2 = new Task("TestName4", "TestDescription4");
         epic1 = new Epic("TestName2", "TestDescription2");
         epic2 = new Epic("TestName5", "TestDescription5");
+        epic3 = new Epic("TestName6", "TestDescription6");
     }
 
     @Test
@@ -311,6 +312,47 @@ public class InMemoryTaskManagerTest {
         manager.deleteEpic(3);
         manager.deleteTask(2);
         Assertions.assertEquals(3, manager.getHistory().size());
+        Assertions.assertEquals(expectedHistory, manager.getHistory());
+    }
+
+    @Test
+    public void clearTasksAndHistory() {
+        manager.addTask(task1);
+        manager.addTask(task2);
+        manager.addEpic(epic1);
+        subtask2 = new Subtask("TestName2", "TestDescription2", epic1.getId());
+        subtask3 = new Subtask("TestName3", "TestDescription3", epic1.getId());
+        manager.addSubtask(subtask2);
+        manager.addSubtask(subtask3);
+        manager.getTask(1);
+        manager.getTask(2);
+        manager.getEpic(3);
+        manager.getSubtask(4);
+        manager.getSubtask(5);
+        ArrayList<Task> expectedHistory = new ArrayList<>();
+        expectedHistory.add(epic1);
+        expectedHistory.add(subtask2);
+        expectedHistory.add(subtask3);
+        manager.clearTasks();
+        Assertions.assertEquals(3, manager.getHistory().size());
+        Assertions.assertEquals(expectedHistory, manager.getHistory());
+        manager.clearEpics();
+        expectedHistory.remove(epic1);
+        expectedHistory.remove(subtask2);
+        expectedHistory.remove(subtask3);
+        Assertions.assertTrue(manager.getHistory().isEmpty());
+        Assertions.assertEquals(expectedHistory, manager.getHistory());
+        manager.addEpic(epic3);
+        subtask3 = new Subtask("TestName4", "TestDescription4", epic3.getId());
+        subtask4 = new Subtask("TestName5", "TestDescription5", epic3.getId());
+        manager.addSubtask(subtask3);
+        manager.addSubtask(subtask4);
+        manager.getEpic(6);
+        manager.getSubtask(7);
+        manager.getSubtask(8);
+        expectedHistory.add(epic3);
+        manager.clearSubtasks();
+        Assertions.assertEquals(1, manager.getHistory().size());
         Assertions.assertEquals(expectedHistory, manager.getHistory());
     }
 }
