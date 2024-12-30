@@ -53,9 +53,13 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void addAndReplaceFirstTaskInHistory() {
+    public void addAndNotRepeatsTaskInHistory() {
+        manager.add(task1);
+        manager.add(task1);
         manager.add(task1);
         manager.add(task2);
+        manager.add(task3);
+        manager.add(task3);
         manager.add(task3);
         manager.add(epic4);
         manager.add(epic5);
@@ -68,15 +72,28 @@ public class InMemoryHistoryManagerTest {
 
         manager.add(subtask11);
 
-        Assertions.assertEquals(10, manager.getHistory().size());
-        Assertions.assertEquals(task2, manager.getHistory().getFirst());
+        Assertions.assertEquals(11, manager.getHistory().size());
+        Assertions.assertEquals(task1, manager.getHistory().getFirst());
         Assertions.assertEquals(subtask11, manager.getHistory().getLast());
 
         manager.add(subtask12);
 
-        Assertions.assertEquals(10, manager.getHistory().size());
-        Assertions.assertEquals(task3, manager.getHistory().getFirst());
+        Assertions.assertEquals(12, manager.getHistory().size());
+        Assertions.assertEquals(task1, manager.getHistory().getFirst());
         Assertions.assertEquals(subtask12, manager.getHistory().getLast());
+    }
+
+    @Test
+    public void removeTaskFromHistory() {
+        manager.add(task1);
+        manager.add(task2);
+        manager.add(task3);
+        manager.remove(1);
+        Assertions.assertEquals(2, manager.getHistory().size());
+        manager.remove(1);
+        Assertions.assertEquals(2, manager.getHistory().size());
+        manager.remove(2);
+        Assertions.assertEquals(1, manager.getHistory().size());
     }
 
     @Test
