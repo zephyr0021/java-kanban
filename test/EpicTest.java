@@ -58,4 +58,17 @@ public class EpicTest {
         Assertions.assertEquals(0, epic.getSubtasks().size());
 
     }
+
+    @Test
+    void epicToString() {
+        Assertions.assertEquals("1,EPIC,TestEpic,NEW,TestDescription,", epic.toString());
+    }
+
+    @Test
+    void epicFromString() {
+        Epic epic1 = Epic.fromString("1,EPIC,TestEpic,NEW,TestDescription,");
+        Epic epic2 = Epic.fromString("5,EPIC,TestEpic2,NEW,TestDescription,");
+        Assertions.assertEquals(epic, epic1);
+        Assertions.assertNotEquals(epic, epic2);
+    }
 }

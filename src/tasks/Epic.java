@@ -1,10 +1,17 @@
 package tasks;
 
+import statuses.StatusTask;
+
 import java.util.ArrayList;
-import java.util.StringJoiner;
 
 public class Epic extends Task {
+    protected TaskType type = TaskType.EPIC;
     private ArrayList<Integer> subtasks;
+
+    public Epic(String name, String description, StatusTask status, int id) {
+        super(name, description, status, id);
+        this.subtasks = new ArrayList<>();
+    }
 
     public Epic(String name, String description, int id) {
         super(name, description, id);
@@ -41,15 +48,14 @@ public class Epic extends Task {
         this.subtasks = subtasks;
     }
 
+    public static Epic fromString(String value) {
+        String[] taskInfo = value.split(",");
+        return new Epic(taskInfo[2], taskInfo[4], StatusTask.valueOf(taskInfo[3]), Integer.parseInt(taskInfo[0]));
+    }
+
     @Override
     public String toString() {
-        return new StringJoiner(", ", Epic.class.getSimpleName() + "[", "]")
-                .add("id=" + id)
-                .add("name='" + name + "'")
-                .add("description='" + description + "'")
-                .add("subtasks size=" + subtasks.size())
-                .add("status=" + status)
-                .toString();
+        return String.format("%d,%s,%s,%s,%s,", id, type, name, status, description);
     }
 
     private boolean checkNotContainsSubtask(Subtask subtask) {

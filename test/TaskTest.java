@@ -42,4 +42,16 @@ public class TaskTest {
         Assertions.assertNotEquals(epic1, epic2);
     }
 
+    @Test
+    void taskToString() {
+        Assertions.assertEquals("1,TASK,TestName1,NEW,TestDescription1,", task1.toString());
+    }
+
+    @Test
+    void taskFromString() {
+        Task task = Task.fromString("1,TASK,TestName1,NEW,TestDescription1,");
+        Assertions.assertEquals(task1, task);
+        Assertions.assertNotEquals(task2, task);
+    }
+
 }
