@@ -1,13 +1,14 @@
 package managers;
 
+import exceptions.ManagerLoadFromFileException;
 import exceptions.ManagerSaveException;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
+import tasks.TaskType;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
@@ -83,20 +84,56 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
+    public static FileBackedTaskManager loadFromFile(File file) throws ManagerSaveException {
+        try (BufferedReader buffer = new BufferedReader(new FileReader(file))) {
+            FileBackedTaskManager manager = new FileBackedTaskManager();
+            List<String> tasks = buffer.lines().toList();
+            String header = "id,type,name,status,description,epic";
+            if (tasks.size() == 1 || tasks.isEmpty()) {
+                throw new ManagerSaveException("Возникла ошибка при загрузке данных из файла - пустой файл", file);
+            } else {
+                for (String task : tasks) {
+                    if (task.equals(header)) {
+                        continue;
+                    }
+                    String[] taskInfo = task.split(",");
+                    switch (TaskType.valueOf(taskInfo[1])) {
+                        case TaskType.TASK:
+                            manager.addTask(Task.fromString(task));
+                            break;
+                        case TaskType.SUBTASK:
+                            manager.addSubtask(Subtask.fromString(task));
+                            break;
+                        case TaskType.EPIC:
+                            manager.addEpic(Epic.fromString(task));
+                            break;
+                        default:
+                            System.out.println("Не определена задача в файле");
+                    }
+
+                }
+            }
+            return manager;
+        } catch (IOException e) {
+            throw new ManagerLoadFromFileException("Возникла ошибка при загрузке данных из файла", file);
+        }
+    }
+
 
     private void save() throws ManagerSaveException {
         try (FileWriter writer = new FileWriter(manager)) {
-            writer.write("id,type,name,status,description,epic\n");
+            String header = "id,type,name,status,description,epic\n";
+            writer.write(header);
             for (Task task : getTasks()) {
                 writer.write(String.format("%s\n", task.toString()));
             }
 
-            for (Subtask subtask : getSubtasks()) {
-                writer.write(String.format("%s\n", subtask.toString()));
-            }
-
             for (Epic epic : getEpics()) {
                 writer.write(String.format("%s\n", epic.toString()));
+            }
+
+            for (Subtask subtask : getSubtasks()) {
+                writer.write(String.format("%s\n", subtask.toString()));
             }
         }
         catch (IOException e) {
