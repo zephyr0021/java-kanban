@@ -74,12 +74,16 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTask(Task task) {
-        if (checkNotContainsTask(task)) {
-            taskId++;
-            task.setId(taskId);
+        if (task.getId() == 0) {
+            do {
+                taskId++;
+                task.setId(taskId);
+            } while (checkContainsAllTasks(task));
+            tasks.put(taskId, task);
+        } else if (!checkContainsAllTasks(task)) {
             tasks.put(task.getId(), task);
         } else {
-            System.out.println("Данная задача уже существует в списке!");
+            System.out.println("Данные с таким id существуют в списке");
         }
     }
 
@@ -87,14 +91,20 @@ public class InMemoryTaskManager implements TaskManager {
     public void addSubtask(Subtask subtask) {
         Epic epic = epics.get(subtask.getEpicId());
         if (epic != null) {
-            if (checkNotContainsSubtask(subtask)) {
-                taskId++;
-                subtask.setId(taskId);
+            if (subtask.getId() == 0) {
+                do {
+                    taskId++;
+                    subtask.setId(taskId);
+                } while (checkContainsAllTasks(subtask));
                 subtasks.put(taskId, subtask);
                 epic.addSubtask(subtask);
                 updateEpicStatus(subtask.getEpicId());
+            } else if (!checkContainsAllTasks(subtask)) {
+                subtasks.put(subtask.getId(), subtask);
+                epic.addSubtask(subtask);
+                updateEpicStatus(subtask.getEpicId());
             } else {
-                System.out.println("Данная подзадача уже существует в списке!");
+                System.out.println("Данные с таким id существуют в списке");
             }
         } else {
             System.out.println("Эпик не существует. Подзадачу невозможно создать без эпика");
@@ -103,14 +113,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addEpic(Epic epic) {
-        if (checkNotContainsEpic(epic)) {
-            taskId++;
-            epic.setId(taskId);
+        if (epic.getId() == 0) {
+            do {
+                taskId++;
+                epic.setId(taskId);
+            } while (checkContainsAllTasks(epic));
             epics.put(taskId, epic);
+        } else if (!checkContainsAllTasks(epic)) {
+            epics.put(epic.getId(), epic);
         } else {
-            System.out.println("Данный эпик уже существует в списке!");
+            System.out.println("Данные с таким id существуют в списке");
         }
     }
+
 
     @Override
     public void deleteTask(int id) {
@@ -213,25 +228,11 @@ public class InMemoryTaskManager implements TaskManager {
         epics.put(id, epic);
     }
 
-    private boolean checkNotContainsTask(Task task) {
+    private <T extends Task> boolean checkContainsAllTasks(T task) {
         if (task == null) {
             return false;
         }
-        return !tasks.containsKey(task.getId()) && task.getId() == 0;
-    }
-
-    private boolean checkNotContainsSubtask(Subtask subtask) {
-        if (subtask == null) {
-            return false;
-        }
-        return !subtasks.containsKey(subtask.getId()) && subtask.getId() == 0;
-    }
-
-    private boolean checkNotContainsEpic(Epic epic) {
-        if (epic == null) {
-            return false;
-        }
-        return !epics.containsKey(epic.getId()) && epic.getId() == 0;
+        return tasks.containsKey(task.getId()) || subtasks.containsKey(task.getId()) || epics.containsKey(task.getId());
     }
 
     private void updateEpicStatus(int epicId) {
