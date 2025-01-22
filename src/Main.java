@@ -1,3 +1,4 @@
+import managers.FileBackedTaskManager;
 import statuses.*;
 import managers.TaskManager;
 import tasks.*;
@@ -8,7 +9,9 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Поехали!");
         TaskManager inMemoryTaskManager = Managers.getDefault();
-        printHistoryDeleteTaskWorkExample(inMemoryTaskManager);
+        TaskManager fileBackedTaskManager = Managers.getDefaultFileBackend();
+//        printHistoryDeleteTaskWorkExample(inMemoryTaskManager);
+        printWorkingExampleWithFile(fileBackedTaskManager);
     }
 
     private static void printWorkingExample(TaskManager manager) {
@@ -120,6 +123,7 @@ public class Main {
 
     private static void printHistoryDeleteTaskWorkExample(TaskManager manager) {
         manager.addTask(new Task("Выгулять собаку", "Погулять с Джеком 20 минут"));
+
         manager.addTask(new Task("Сделать ДЗ", "Сделать ДЗ за 1 час"));
         manager.addEpic(new Epic("Написать курсовую работу", "Написать курсовую по теме Маркетинг"));
         manager.addSubtask(new Subtask("Собрать теоретическую часть", "Искать в интернете", 3));
@@ -175,6 +179,59 @@ public class Main {
         System.out.println("История:");
         for (Task task : manager.getHistory()) {
             System.out.println(task);
+        }
+    }
+
+    private static void printWorkingExampleWithFile(TaskManager manager) {
+        manager.addTask(new Task("Выгулять собаку", "Погулять с Джеком 20 минут"));
+        manager.addEpic(new Epic("Написать курсовую работу", "Написать курсовую по теме Маркетинг"));
+        manager.addSubtask(new Subtask("Собрать теоретическую часть", "Искать в интернете", 2));
+        manager.addSubtask(new Subtask("Сформировать содержание", "Автоматически", 2));
+        manager.addSubtask(new Subtask("Выполнить практическую часть", "Провести игру", 2));
+        manager.addEpic(new Epic("Покрасить волосы", "На праздник"));
+        manager.addSubtask(new Subtask("Оформить реферат", "Для выступления", 6));
+        System.out.println("Задачи:");
+        for (Task task : manager.getTasks()) {
+            System.out.println(task);
+        }
+        System.out.println("Эпики:");
+        for (Epic epic : manager.getEpics()) {
+            System.out.println(epic);
+        }
+        System.out.println("Подзадачи:");
+        for (Subtask subtask : manager.getSubtasks()) {
+            System.out.println(subtask);
+        }
+        manager.updateTask(new Task("Выгулять псину", "Погулять с Джеком 40 минут", 1));
+        manager.updateSubtask(new Subtask("Собрать теоретическую часть", "Искать в интернете", StatusTask.DONE, 2, 3));
+        System.out.println("После выполнения работ:");
+        System.out.println("Задачи:");
+        for (Task task : manager.getTasks()) {
+            System.out.println(task);
+        }
+        System.out.println("Эпики:");
+        for (Epic epic : manager.getEpics()) {
+            System.out.println(epic);
+        }
+        System.out.println("Подзадачи:");
+        for (Subtask subtask : manager.getSubtasks()) {
+            System.out.println(subtask);
+        }
+        manager.deleteSubtask(3);
+        manager.deleteEpic(2);
+        manager.updateSubtask(new Subtask("Оформить реферат", "Для выступления", StatusTask.DONE, 6, 7));
+        System.out.println("После выполнения работ:");
+        System.out.println("Задачи:");
+        for (Task task : manager.getTasks()) {
+            System.out.println(task);
+        }
+        System.out.println("Эпики:");
+        for (Epic epic : manager.getEpics()) {
+            System.out.println(epic);
+        }
+        System.out.println("Подзадачи:");
+        for (Subtask subtask : manager.getSubtasks()) {
+            System.out.println(subtask);
         }
     }
 }
