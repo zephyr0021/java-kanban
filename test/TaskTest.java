@@ -28,6 +28,7 @@ public class TaskTest {
         epic2 = new Epic("TestName2", "TestDescription2", 6);
         epic3 = new Epic("TestName3", "TestDescription3", 5);
     }
+
     @Test
     void shouldEqualsIsSameIds() {
         Assertions.assertEquals(task1, task3);

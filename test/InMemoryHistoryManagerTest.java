@@ -20,6 +20,7 @@ public class InMemoryHistoryManagerTest {
     static Subtask subtask10;
     static Subtask subtask11;
     static Subtask subtask12;
+
     @BeforeAll
     public static void setup() {
         task1 = new Task("Task1", "Description1", 1);

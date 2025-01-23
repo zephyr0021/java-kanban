@@ -22,6 +22,7 @@ public class FileBackendTaskManagerTest {
     Subtask subtask1;
     Subtask subtask2;
     Subtask subtask3;
+
     @BeforeEach
     public void setUp() throws IOException {
         manager = new FileBackedTaskManager();
@@ -32,8 +33,8 @@ public class FileBackendTaskManagerTest {
         epic1 = new Epic("TestName2", "TestDescription2");
         epic2 = new Epic("TestName5", "TestDescription5");
         epic3 = new Epic("TestName6", "TestDescription6");
-        subtask2 = new Subtask("TestName8", "TestDescription8",4);
-        subtask3 = new Subtask("TestName9", "TestDescription9",5);
+        subtask2 = new Subtask("TestName8", "TestDescription8", 4);
+        subtask3 = new Subtask("TestName9", "TestDescription9", 5);
     }
 
     @AfterEach
@@ -60,7 +61,7 @@ public class FileBackendTaskManagerTest {
     public void saveTasksFileFromManager() {
         manager.addTask(task1);
         manager.addEpic(epic1);
-        manager.addSubtask(new Subtask("TestName7", "TestDescription7",2));
+        manager.addSubtask(new Subtask("TestName7", "TestDescription7", 2));
         try (BufferedReader buffer = new BufferedReader(new FileReader(testTmpFile))) {
             ArrayList<String> tasks = new ArrayList<>(buffer.lines().toList());
             tasks.remove(header);
@@ -78,10 +79,10 @@ public class FileBackendTaskManagerTest {
 
     @Test
     public void loadTasksFromFileToManager() {
-        task1 = new Task("TestName1", "TestDescription1",1);
-        task2 = new Task("TestName4", "TestDescription4",2);
-        epic1 = new Epic("TestName2", "TestDescription2",3);
-        subtask1 = new Subtask("TestName8", "TestDescription8",3,4);
+        task1 = new Task("TestName1", "TestDescription1", 1);
+        task2 = new Task("TestName4", "TestDescription4", 2);
+        epic1 = new Epic("TestName2", "TestDescription2", 3);
+        subtask1 = new Subtask("TestName8", "TestDescription8", 3, 4);
         try (FileWriter writer = new FileWriter(testTmpFile)) {
             writer.write(String.format("%s\n", header));
             writer.write(String.format("%s\n", task1.toString()));
@@ -101,10 +102,10 @@ public class FileBackendTaskManagerTest {
 
     @Test
     public void loadTasksFromFileToManagerAddOtherTasks() {
-        task1 = new Task("TestName1", "TestDescription1",1);
-        task2 = new Task("TestName4", "TestDescription4",2);
-        epic1 = new Epic("TestName2", "TestDescription2",3);
-        subtask1 = new Subtask("TestName8", "TestDescription8",3,4);
+        task1 = new Task("TestName1", "TestDescription1", 1);
+        task2 = new Task("TestName4", "TestDescription4", 2);
+        epic1 = new Epic("TestName2", "TestDescription2", 3);
+        subtask1 = new Subtask("TestName8", "TestDescription8", 3, 4);
         try (FileWriter writer = new FileWriter(testTmpFile)) {
             writer.write(String.format("%s\n", header));
             writer.write(String.format("%s\n", task1.toString()));
@@ -119,7 +120,7 @@ public class FileBackendTaskManagerTest {
         Task task3 = new Task("TestName1", "TestDescription1");
         Task task4 = new Task("TestName4", "TestDescription4");
         Epic epic4 = new Epic("TestName4", "TestDescription4");
-        Subtask subtask4 = new Subtask("TestName8", "TestDescription8",7);
+        Subtask subtask4 = new Subtask("TestName8", "TestDescription8", 7);
         manager.addTask(task3);
         manager.addTask(task4);
         manager.addEpic(epic4);
@@ -129,7 +130,6 @@ public class FileBackendTaskManagerTest {
         Assertions.assertEquals(manager.getEpic(7), epic4);
         Assertions.assertEquals(manager.getSubtask(8), subtask4);
     }
-
 
 
 }

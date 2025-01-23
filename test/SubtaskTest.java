@@ -11,8 +11,8 @@ public class SubtaskTest {
 
     @BeforeEach
     void setUp() {
-        epic = new Epic("TestEpic","TestDescription", 1);
-        subtask = new Subtask("TestSubtask1","TestDescription1", StatusTask.NEW, 1, 2);
+        epic = new Epic("TestEpic", "TestDescription", 1);
+        subtask = new Subtask("TestSubtask1", "TestDescription1", StatusTask.NEW, 1, 2);
     }
 
     @Test
@@ -27,7 +27,6 @@ public class SubtaskTest {
         Assertions.assertEquals(subtask, subtask1);
         Assertions.assertNotEquals(subtask, subtask2);
     }
-
 
 
 }

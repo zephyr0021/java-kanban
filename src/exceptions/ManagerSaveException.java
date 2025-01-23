@@ -4,6 +4,7 @@ import java.io.File;
 
 public class ManagerSaveException extends Error {
     File file;
+
     public ManagerSaveException(String message, File file) {
         super(message);
         this.file = file;

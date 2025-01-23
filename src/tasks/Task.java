@@ -1,6 +1,7 @@
 package tasks;
 
 import statuses.StatusTask;
+
 import java.util.Objects;
 
 public class Task {
@@ -9,6 +10,7 @@ public class Task {
     protected StatusTask status;
     protected int id;
     protected TaskType type = TaskType.TASK;
+
     public Task(String name, String description, StatusTask status, int id) {
         this.name = name;
         this.description = description;

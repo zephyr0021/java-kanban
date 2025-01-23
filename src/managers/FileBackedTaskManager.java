@@ -13,6 +13,7 @@ import java.util.ArrayList;
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public File manager = new File("manager.csv");
+
     @Override
     public void addTask(Task task) {
         super.addTask(task);
@@ -128,8 +129,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             for (Subtask subtask : getSubtasks()) {
                 writer.write(String.format("%s\n", subtask.toString()));
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new ManagerSaveException("Возникла ошибка при автосохранении менеджера", manager);
         }
     }
