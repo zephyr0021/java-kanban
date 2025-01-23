@@ -8,11 +8,11 @@ import tasks.Task;
 import tasks.TaskType;
 
 import java.io.*;
-import java.util.List;
+import java.util.ArrayList;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
-    File manager = new File("manager.csv");
+    public File manager = new File("manager.csv");
     @Override
     public void addTask(Task task) {
         super.addTask(task);
@@ -84,33 +84,26 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-    public static FileBackedTaskManager loadFromFile(File file) throws ManagerSaveException {
+    public static FileBackedTaskManager loadFromFile(File file) throws ManagerLoadFromFileException {
         try (BufferedReader buffer = new BufferedReader(new FileReader(file))) {
             FileBackedTaskManager manager = new FileBackedTaskManager();
-            List<String> tasks = buffer.lines().toList();
+            ArrayList<String> tasks = new ArrayList<>(buffer.lines().toList());
             String header = "id,type,name,status,description,epic";
-            if (tasks.size() == 1 || tasks.isEmpty()) {
-                throw new ManagerSaveException("Возникла ошибка при загрузке данных из файла - пустой файл", file);
-            } else {
-                for (String task : tasks) {
-                    if (task.equals(header)) {
-                        continue;
-                    }
-                    String[] taskInfo = task.split(",");
-                    switch (TaskType.valueOf(taskInfo[1])) {
-                        case TaskType.TASK:
-                            manager.addTask(Task.fromString(task));
-                            break;
-                        case TaskType.SUBTASK:
-                            manager.addSubtask(Subtask.fromString(task));
-                            break;
-                        case TaskType.EPIC:
-                            manager.addEpic(Epic.fromString(task));
-                            break;
-                        default:
-                            System.out.println("Не определена задача в файле");
-                    }
-
+            tasks.remove(header);
+            for (String task : tasks) {
+                String[] taskInfo = task.split(",");
+                switch (TaskType.valueOf(taskInfo[1])) {
+                    case TaskType.TASK:
+                        manager.addTask(Task.fromString(task));
+                        break;
+                    case TaskType.SUBTASK:
+                        manager.addSubtask(Subtask.fromString(task));
+                        break;
+                    case TaskType.EPIC:
+                        manager.addEpic(Epic.fromString(task));
+                        break;
+                    default:
+                        System.out.println("Не определена задача в файле");
                 }
             }
             return manager;
@@ -138,6 +131,22 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
         catch (IOException e) {
             throw new ManagerSaveException("Возникла ошибка при автосохранении менеджера", manager);
+        }
+    }
+
+    public static void main(String[] args) {
+        FileBackedTaskManager manager = FileBackedTaskManager.loadFromFile(new File("manager.csv"));
+        System.out.println("Задачи:");
+        for (Task task : manager.getTasks()) {
+            System.out.println(task);
+        }
+        System.out.println("Эпики:");
+        for (Epic epic : manager.getEpics()) {
+            System.out.println(epic);
+        }
+        System.out.println("Подзадачи:");
+        for (Subtask subtask : manager.getSubtasks()) {
+            System.out.println(subtask);
         }
     }
 }

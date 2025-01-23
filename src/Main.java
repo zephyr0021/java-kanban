@@ -4,6 +4,8 @@ import managers.TaskManager;
 import tasks.*;
 import util.Managers;
 
+import java.io.File;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -12,6 +14,7 @@ public class Main {
         TaskManager fileBackedTaskManager = Managers.getDefaultFileBackend();
 //        printHistoryDeleteTaskWorkExample(inMemoryTaskManager);
         printWorkingExampleWithFile(fileBackedTaskManager);
+//        printWorkingExampleFromFile(file);
     }
 
     private static void printWorkingExample(TaskManager manager) {
@@ -233,5 +236,28 @@ public class Main {
         for (Subtask subtask : manager.getSubtasks()) {
             System.out.println(subtask);
         }
+    }
+
+    private static void printWorkingExampleFromFile(File file) {
+        FileBackedTaskManager manager = FileBackedTaskManager.loadFromFile(file);
+        System.out.println("Задачи:");
+        for (Task task : manager.getTasks()) {
+            System.out.println(task);
+        }
+        System.out.println("Эпики:");
+        for (Epic epic : manager.getEpics()) {
+            System.out.println(epic);
+        }
+        System.out.println("Подзадачи:");
+        for (Subtask subtask : manager.getSubtasks()) {
+            System.out.println(subtask);
+        }
+        manager.addTask(new Task("Тест1", "Погулять с Джеком 20 минут"));
+        manager.addTask(new Task("Тест2", "Погулять с Джеком 20 минут"));
+        manager.addTask(new Task("Тест3", "Погулять с Джеком 20 минут"));
+        manager.addTask(new Task("Тест4", "Погулять с Джеком 20 минут"));
+        manager.addTask(new Task("Тест5", "Погулять с Джеком 20 минут"));
+        manager.addTask(new Task("Тест6", "Погулять с Джеком 20 минут"));
+        manager.addTask(new Task("Тест7", "Погулять с Джеком 20 минут"));
     }
 }
