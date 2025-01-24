@@ -8,11 +8,24 @@ import tasks.Task;
 import tasks.TaskType;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
-    public File manager = new File("manager.csv");
+    private final File managerFile;
+
+    public FileBackedTaskManager(String path) {
+        this.managerFile = new File(path);
+    }
+
+    public FileBackedTaskManager(File manager) {
+        this.managerFile = manager;
+    }
+
+    public FileBackedTaskManager() {
+        this.managerFile = new File("manager.csv");
+    }
 
     @Override
     public void addTask(Task task) {
@@ -85,6 +98,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
+    public File getManagerFile() {
+        return this.managerFile;
+    }
+
     public static FileBackedTaskManager loadFromFile(File file) throws ManagerLoadFromFileException {
         try (BufferedReader buffer = new BufferedReader(new FileReader(file))) {
             FileBackedTaskManager manager = new FileBackedTaskManager();
@@ -115,7 +132,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
 
     private void save() throws ManagerSaveException {
-        try (FileWriter writer = new FileWriter(manager)) {
+        try (FileWriter writer = new FileWriter(managerFile)) {
             String header = "id,type,name,status,description,epic\n";
             writer.write(header);
             for (Task task : getTasks()) {
@@ -130,7 +147,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.write(String.format("%s\n", subtask.toString()));
             }
         } catch (IOException e) {
-            throw new ManagerSaveException("Возникла ошибка при автосохранении менеджера", manager);
+            throw new ManagerSaveException("Возникла ошибка при автосохранении менеджера", managerFile);
         }
     }
 

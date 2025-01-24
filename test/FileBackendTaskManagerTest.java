@@ -25,9 +25,9 @@ public class FileBackendTaskManagerTest {
 
     @BeforeEach
     public void setUp() throws IOException {
-        manager = new FileBackedTaskManager();
+
         testTmpFile = File.createTempFile("manager", ".csv");
-        manager.manager = testTmpFile;
+        manager = new FileBackedTaskManager(testTmpFile);
         task1 = new Task("TestName1", "TestDescription1");
         task2 = new Task("TestName4", "TestDescription4");
         epic1 = new Epic("TestName2", "TestDescription2");
@@ -39,13 +39,13 @@ public class FileBackendTaskManagerTest {
 
     @AfterEach
     public void tearDown() {
-        manager.manager.deleteOnExit();
+        manager.getManagerFile().deleteOnExit();
     }
 
     @Test
     public void saveEmptyFileFromManager() {
-        System.out.println(manager.manager.getAbsolutePath());
-        Assertions.assertEquals(0, manager.manager.length());
+        System.out.println(manager.getManagerFile().getAbsolutePath());
+        Assertions.assertEquals(0, manager.getManagerFile().length());
     }
 
     @Test

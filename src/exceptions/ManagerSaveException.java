@@ -1,8 +1,9 @@
 package exceptions;
 
 import java.io.File;
+import java.util.NoSuchElementException;
 
-public class ManagerSaveException extends Error {
+public class ManagerSaveException extends NoSuchElementException {
     File file;
 
     public ManagerSaveException(String message, File file) {
