@@ -1,9 +1,9 @@
 package tasks;
 
-import java.util.StringJoiner;
 import statuses.StatusTask;
 
 public class Subtask extends Task {
+    protected TaskType type = TaskType.SUBTASK;
     private int epicId;
 
     public Subtask(String name, String description, StatusTask status, int epicId, int id) {
@@ -34,14 +34,14 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
+    public static Subtask fromString(String value) {
+        String[] taskInfo = value.split(",");
+        return new Subtask(taskInfo[2], taskInfo[4], StatusTask.valueOf(taskInfo[3]), Integer.parseInt(taskInfo[5]),
+                Integer.parseInt(taskInfo[0]));
+    }
+
     @Override
     public String toString() {
-        return new StringJoiner(", ", Subtask.class.getSimpleName() + "[", "]")
-                .add("id=" + id)
-                .add("epicId=" + epicId)
-                .add("name='" + name + "'")
-                .add("description='" + description + "'")
-                .add("status=" + status)
-                .toString();
+        return String.format("%d,%s,%s,%s,%s,%d", id, type, name, status, description, epicId);
     }
 }

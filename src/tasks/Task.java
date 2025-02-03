@@ -1,14 +1,15 @@
 package tasks;
 
 import statuses.StatusTask;
+
 import java.util.Objects;
-import java.util.StringJoiner;
 
 public class Task {
     protected String name;
     protected String description;
     protected StatusTask status;
     protected int id;
+    protected TaskType type = TaskType.TASK;
 
     public Task(String name, String description, StatusTask status, int id) {
         this.name = name;
@@ -68,14 +69,15 @@ public class Task {
         this.status = status;
     }
 
+
+    public static Task fromString(String value) {
+        String[] taskInfo = value.split(",");
+        return new Task(taskInfo[2], taskInfo[4], StatusTask.valueOf(taskInfo[3]), Integer.parseInt(taskInfo[0]));
+    }
+
     @Override
     public String toString() {
-        return new StringJoiner(", ", Task.class.getSimpleName() + "[", "]")
-                .add("id=" + id)
-                .add("name='" + name + "'")
-                .add("description='" + description + "'")
-                .add("status=" + status)
-                .toString();
+        return String.format("%d,%s,%s,%s,%s,", id, type, name, status, description);
     }
 
     @Override

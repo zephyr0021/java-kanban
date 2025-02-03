@@ -28,6 +28,7 @@ public class TaskTest {
         epic2 = new Epic("TestName2", "TestDescription2", 6);
         epic3 = new Epic("TestName3", "TestDescription3", 5);
     }
+
     @Test
     void shouldEqualsIsSameIds() {
         Assertions.assertEquals(task1, task3);
@@ -40,6 +41,18 @@ public class TaskTest {
         Assertions.assertNotEquals(task1, task2);
         Assertions.assertNotEquals(subtask1, subtask2);
         Assertions.assertNotEquals(epic1, epic2);
+    }
+
+    @Test
+    void taskToString() {
+        Assertions.assertEquals("1,TASK,TestName1,NEW,TestDescription1,", task1.toString());
+    }
+
+    @Test
+    void taskFromString() {
+        Task task = Task.fromString("1,TASK,TestName1,NEW,TestDescription1,");
+        Assertions.assertEquals(task1, task);
+        Assertions.assertNotEquals(task2, task);
     }
 
 }
