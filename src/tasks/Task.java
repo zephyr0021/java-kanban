@@ -2,6 +2,8 @@ package tasks;
 
 import statuses.StatusTask;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task {
@@ -10,12 +12,49 @@ public class Task {
     protected StatusTask status;
     protected int id;
     protected TaskType type = TaskType.TASK;
+    protected Duration duration;
+    protected LocalDateTime startTime;
+    protected LocalDateTime endTime;
+
+    public Task(String name, String description, StatusTask status, int id, Duration duration, LocalDateTime startTime) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.id = id;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+
+    public Task(String name, String description, StatusTask status, Duration duration, LocalDateTime startTime) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
 
     public Task(String name, String description, StatusTask status, int id) {
         this.name = name;
         this.description = description;
         this.status = status;
         this.id = id;
+    }
+
+    public Task(String name, String description, int id, Duration duration, LocalDateTime startTime) {
+        this.name = name;
+        this.description = description;
+        this.id = id;
+        this.status = StatusTask.NEW;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+
+    public Task(String name, String description, Duration duration, LocalDateTime startTime) {
+        this.name = name;
+        this.description = description;
+        this.status = StatusTask.NEW;
+        this.duration = duration;
+        this.startTime = startTime;
     }
 
     public Task(String name, String description, StatusTask status) {
@@ -77,7 +116,9 @@ public class Task {
 
     @Override
     public String toString() {
-        return String.format("%d,%s,%s,%s,%s,", id, type, name, status, description);
+        // TODO: Поработать над форматом вывода duration, startTime, endTime
+        return String.format("%d,%s,%s,%s,%s,%s,%s,%s,", id, type, name, status, description, duration, startTime,
+                endTime);
     }
 
     @Override
@@ -86,11 +127,13 @@ public class Task {
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
         if (id == task.id) return true;
-        return Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status;
+        return Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status
+                && Objects.equals(duration, task.duration) && Objects.equals(startTime, task.startTime)
+                && Objects.equals(endTime, task.endTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, status, id);
+        return Objects.hash(name, description, status, id, duration, startTime, endTime);
     }
 }
