@@ -105,7 +105,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try (BufferedReader buffer = new BufferedReader(new FileReader(file))) {
             FileBackedTaskManager manager = new FileBackedTaskManager();
             ArrayList<String> tasks = new ArrayList<>(buffer.lines().toList());
-            String header = "id,type,name,status,description,epic";
+            String header = "id,type,name,status,description,epic,duration,start_time,end_time";
             tasks.remove(header);
             for (String task : tasks) {
                 String[] taskInfo = task.split(",");
@@ -132,7 +132,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void save() throws ManagerSaveException {
         try (FileWriter writer = new FileWriter(managerFile)) {
-            String header = "id,type,name,status,description,epic\n";
+            String header = "id,type,name,status,description,epic,duration,start_time,end_time\n";
             writer.write(header);
             for (Task task : getTasks()) {
                 writer.write(String.format("%s\n", task.toString()));
