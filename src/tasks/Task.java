@@ -3,6 +3,7 @@ package tasks;
 import statuses.StatusTask;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -23,6 +24,7 @@ public class Task {
         this.id = id;
         this.duration = duration;
         this.startTime = startTime;
+        this.endTime = startTime.plus(duration);
     }
 
     public Task(String name, String description, StatusTask status, Duration duration, LocalDateTime startTime) {
@@ -31,6 +33,7 @@ public class Task {
         this.status = status;
         this.duration = duration;
         this.startTime = startTime;
+        this.endTime = startTime.plus(duration);
     }
 
     public Task(String name, String description, StatusTask status, int id) {
@@ -47,6 +50,7 @@ public class Task {
         this.status = StatusTask.NEW;
         this.duration = duration;
         this.startTime = startTime;
+        this.endTime = startTime.plus(duration);
     }
 
     public Task(String name, String description, Duration duration, LocalDateTime startTime) {
@@ -55,6 +59,7 @@ public class Task {
         this.status = StatusTask.NEW;
         this.duration = duration;
         this.startTime = startTime;
+        this.endTime = startTime.plus(duration);
     }
 
     public Task(String name, String description, StatusTask status) {
@@ -92,6 +97,10 @@ public class Task {
         return id;
     }
 
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -111,13 +120,14 @@ public class Task {
 
     public static Task fromString(String value) {
         String[] taskInfo = value.split(",");
-        return new Task(taskInfo[2], taskInfo[4], StatusTask.valueOf(taskInfo[3]), Integer.parseInt(taskInfo[0]));
+        return new Task(taskInfo[2], taskInfo[4], StatusTask.valueOf(taskInfo[3]), Integer.parseInt(taskInfo[0]),
+                Duration.parse(taskInfo[6]), LocalDateTime.parse(taskInfo[7]));
     }
 
     @Override
     public String toString() {
         // TODO: Поработать над форматом вывода duration, startTime, endTime
-        return String.format("%d,%s,%s,%s,%s,%s,%s,%s,", id, type, name, status, description, duration, startTime,
+        return String.format("%d,%s,%s,%s,%s,,%s,%s,%s", id, type, name, status, description, duration, startTime,
                 endTime);
     }
 
