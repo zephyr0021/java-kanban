@@ -19,7 +19,7 @@ public class SubtaskTest {
 
     @BeforeEach
     void setUp() {
-        epic = new Epic("TestEpic", "TestDescription", 1);
+        epic = new Epic("TestEpic", "TestDescription", 1, duration1, startTime1);
         subtask = new Subtask("TestSubtask1", "TestDescription1", StatusTask.NEW, 1, 2, duration1, startTime1);
     }
 

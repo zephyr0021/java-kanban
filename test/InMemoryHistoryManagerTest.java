@@ -5,6 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.*;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 
 public class InMemoryHistoryManagerTest {
     InMemoryHistoryManager manager;
@@ -20,21 +25,24 @@ public class InMemoryHistoryManagerTest {
     static Subtask subtask10;
     static Subtask subtask11;
     static Subtask subtask12;
+    static Duration duration1 = Duration.ofMinutes(100);
+    static LocalDateTime startTime1 = LocalDateTime.of(LocalDate.of(2025,2,4),
+            LocalTime.of(10,0));
 
     @BeforeAll
     public static void setup() {
-        task1 = new Task("Task1", "Description1", 1);
-        task2 = new Task("Task2", "Description2", 2);
-        task3 = new Task("Task3", "Description3", 3);
-        epic4 = new Epic("Epic4", "Description4", 4);
-        epic5 = new Epic("Epic5", "Description5", 5);
-        epic6 = new Epic("Epic6", "Description6", 6);
-        subtask7 = new Subtask("Subtask7", "Description7", 4, 7);
-        subtask8 = new Subtask("Subtask8", "Description8", 5, 8);
-        subtask9 = new Subtask("Subtask9", "Description9", 6, 9);
-        subtask10 = new Subtask("Subtask10", "Description10", 4, 10);
-        subtask11 = new Subtask("Subtask11", "Description11", 5, 11);
-        subtask12 = new Subtask("Subtask12", "Description12", 6, 12);
+        task1 = new Task("Task1", "Description1", 1, duration1, startTime1);
+        task2 = new Task("Task2", "Description2", 2, duration1, startTime1);
+        task3 = new Task("Task3", "Description3", 3, duration1, startTime1);
+        epic4 = new Epic("Epic4", "Description4", 4, duration1, startTime1);
+        epic5 = new Epic("Epic5", "Description5", 5, duration1, startTime1);
+        epic6 = new Epic("Epic6", "Description6", 6, duration1, startTime1);
+        subtask7 = new Subtask("Subtask7", "Description7", 4, 7, duration1, startTime1);
+        subtask8 = new Subtask("Subtask8", "Description8", 5, 8, duration1, startTime1);
+        subtask9 = new Subtask("Subtask9", "Description9", 6, 9, duration1, startTime1);
+        subtask10 = new Subtask("Subtask10", "Description10", 4, 10, duration1, startTime1);
+        subtask11 = new Subtask("Subtask11", "Description11", 5, 11, duration1, startTime1);
+        subtask12 = new Subtask("Subtask12", "Description12", 6, 12, duration1, startTime1);
     }
 
     @BeforeEach
