@@ -4,7 +4,6 @@ import statuses.StatusTask;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class Epic extends Task {
@@ -24,6 +23,21 @@ public class Epic extends Task {
 
     public Epic(String name, String description, Duration duration, LocalDateTime startTime) {
         super(name, description, duration, startTime);
+        this.subtasks = new ArrayList<>();
+    }
+
+    public Epic(String name, String description, StatusTask status, int id) {
+        super(name, description, status, id);
+        this.subtasks = new ArrayList<>();
+    }
+
+    public Epic(String name, String description, int id) {
+        super(name, description, id);
+        this.subtasks = new ArrayList<>();
+    }
+
+    public Epic(String name, String description) {
+        super(name, description);
         this.subtasks = new ArrayList<>();
     }
 
