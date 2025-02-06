@@ -7,6 +7,7 @@ import util.Managers;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Task> tasks = new HashMap<>();
@@ -230,6 +231,69 @@ public class InMemoryTaskManager implements TaskManager {
         epic.setSubtasks(oldEpic.getSubtasks());
         epic.setStatus(oldEpic.getStatus());
         epics.put(id, epic);
+    }
+
+    @Override
+    public TreeSet<Task> getPrioritizedTasks() {
+        ArrayList<Task> tasksWithoutTimeNulls = tasks.values().stream().
+                filter(task -> Objects.nonNull(task.getStartTime())).
+                collect(Collectors.toCollection(ArrayList::new));
+
+        Comparator<Task> comparator = new Comparator<Task>() {
+
+            @Override
+            public int compare(Task o1, Task o2) {
+                return o1.getStartTime().compareTo(o2.getStartTime());
+            }
+        };
+
+        TreeSet<Task> prioritizedTasks = new TreeSet<>(comparator);
+
+        prioritizedTasks.addAll(tasksWithoutTimeNulls);
+
+        return prioritizedTasks;
+    }
+
+    @Override
+    public TreeSet<Subtask> getPrioritizedSubtasks() {
+        ArrayList<Subtask> subtasksWithoutTimeNulls = subtasks.values().stream().
+                filter(task -> Objects.nonNull(task.getStartTime())).
+                collect(Collectors.toCollection(ArrayList::new));
+
+        Comparator<Task> comparator = new Comparator<Task>() {
+
+            @Override
+            public int compare(Task o1, Task o2) {
+                return o1.getStartTime().compareTo(o2.getStartTime());
+            }
+        };
+
+        TreeSet<Subtask> prioritizedSubtasks = new TreeSet<>(comparator);
+
+        prioritizedSubtasks.addAll(subtasksWithoutTimeNulls);
+
+        return prioritizedSubtasks;
+    }
+
+    @Override
+    public TreeSet<Epic> getPrioritizedEpics() {
+        ArrayList<Epic> epicsWithoutTimeNulls = epics.values().stream().
+                filter(task -> Objects.nonNull(task.getStartTime())).
+                collect(Collectors.toCollection(ArrayList::new));
+
+        Comparator<Task> comparator = new Comparator<Task>() {
+
+            @Override
+            public int compare(Task o1, Task o2) {
+                return o1.getStartTime().compareTo(o2.getStartTime());
+            }
+        };
+
+        TreeSet<Epic> prioritizedEpics = new TreeSet<>(comparator);
+
+        prioritizedEpics.addAll(epicsWithoutTimeNulls);
+
+        return prioritizedEpics;
     }
 
     private <T extends Task> boolean checkContainsAllTasks(T task) {

@@ -15,8 +15,9 @@ public class Main {
         TaskManager inMemoryTaskManager = Managers.getDefault();
         TaskManager fileBackedTaskManager = Managers.getDefaultFileBackend();
 //        printHistoryDeleteTaskWorkExample(inMemoryTaskManager);
-        printWorkingExampleWithFile(fileBackedTaskManager);
+//        printWorkingExampleWithFile(fileBackedTaskManager);
 //        printWorkingExampleFromFile(file);
+          printWorkinExamplePrioritizedTasks(inMemoryTaskManager);
     }
 
 //    private static void printWorkingExample(TaskManager manager) {
@@ -237,6 +238,19 @@ public class Main {
         for (Subtask subtask : manager.getSubtasks()) {
             System.out.println(subtask);
         }
+    }
+
+    private static void printWorkinExamplePrioritizedTasks(TaskManager manager) {
+        manager.addTask(new Task("Выгулять собаку", "Погулять с Джеком 20 минут", Duration.ofMinutes(100), LocalDateTime.of(2025, 6,2,10,0)));
+        manager.addTask(new Task("Выгулять собаку", "Погулять с Джеком 20 минут3.4"));
+        manager.addTask(new Task("Выгулять собаку2", "Погулять с Джеком 20 минут2", Duration.ofMinutes(100), LocalDateTime.of(2025, 6,2,10,10)));
+        manager.addTask(new Task("Выгулять собаку3", "Погулять с Джеком 20 минут3", Duration.ofMinutes(100), LocalDateTime.of(2025, 7,2,9,0)));
+        manager.addTask(new Task("Выгулять собаку4", "Погулять с Джеком 20 минут4", Duration.ofMinutes(100), LocalDateTime.of(2025, 6,2,10,0)));
+        manager.addEpic(new Epic("Выгулять собаку5", "Погулять с Джеком 20 минут5"));
+        manager.addSubtask(new Subtask("Выгулять собаку6", "Погулять с Джеком 20 минут6", 6, Duration.ofMinutes(100), LocalDateTime.of(2025, 6,2,10,0)));
+        manager.getPrioritizedTasks().forEach(System.out::println);
+        manager.getPrioritizedSubtasks().forEach(System.out::println);
+        manager.getPrioritizedEpics().forEach(System.out::println);
     }
 
 //    private static void printWorkingExampleFromFile(File file) {
