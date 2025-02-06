@@ -112,6 +112,14 @@ public class Task {
         return id;
     }
 
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
     public LocalDateTime getEndTime() {
         return endTime;
     }
@@ -132,6 +140,17 @@ public class Task {
         this.status = status;
     }
 
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
 
     public static Task fromString(String value) {
         String[] taskInfo = value.split(",");
