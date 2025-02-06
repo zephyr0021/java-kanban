@@ -21,8 +21,8 @@ public class ManagersTest {
         Assertions.assertNotNull(manager);
         manager.addTask(new Task("Task1", "Descr1", duration1, startTime1));
         manager.addTask(new Task("Task2", "Descr2", duration1, startTime1));
-        manager.addEpic(new Epic("Epic1", "Descr1", duration1, startTime1));
-        manager.addEpic(new Epic("Epic2", "Descr2", duration1, startTime1));
+        manager.addEpic(new Epic("Epic1", "Descr1"));
+        manager.addEpic(new Epic("Epic2", "Descr2"));
         Assertions.assertEquals("Task1", manager.getTasks().getFirst().getName());
         Assertions.assertEquals(2, manager.getTasks().size());
         manager.deleteTask(1);

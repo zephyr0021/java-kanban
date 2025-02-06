@@ -21,16 +21,32 @@ public class Task {
         this.description = description;
         this.status = status;
         this.id = id;
-        this.duration = duration;
+        this.duration = Duration.ofMinutes(duration.toMinutes());
         this.startTime = startTime;
         this.endTime = startTime.plus(duration);
+    }
+
+    public Task(String name, String description, StatusTask status, int id, Duration duration) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.id = id;
+        this.duration = Duration.ofMinutes(duration.toMinutes());
+    }
+
+    public Task(String name, String description, StatusTask status, int id, LocalDateTime startTime) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.id = id;
+        this.startTime = startTime;
     }
 
     public Task(String name, String description, StatusTask status, Duration duration, LocalDateTime startTime) {
         this.name = name;
         this.description = description;
         this.status = status;
-        this.duration = duration;
+        this.duration = Duration.ofMinutes(duration.toMinutes());
         this.startTime = startTime;
         this.endTime = startTime.plus(duration);
     }
@@ -40,7 +56,7 @@ public class Task {
         this.description = description;
         this.id = id;
         this.status = StatusTask.NEW;
-        this.duration = duration;
+        this.duration = Duration.ofMinutes(duration.toMinutes());
         this.startTime = startTime;
         this.endTime = startTime.plus(duration);
     }
@@ -49,7 +65,7 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = StatusTask.NEW;
-        this.duration = duration;
+        this.duration = Duration.ofMinutes(duration.toMinutes());
         this.startTime = startTime;
         this.endTime = startTime.plus(duration);
     }
@@ -119,8 +135,18 @@ public class Task {
 
     public static Task fromString(String value) {
         String[] taskInfo = value.split(",");
-        return new Task(taskInfo[2], taskInfo[4], StatusTask.valueOf(taskInfo[3]), Integer.parseInt(taskInfo[0]),
-                Duration.parse(taskInfo[6]), LocalDateTime.parse(taskInfo[7]));
+        if (taskInfo[6].equals("null") && taskInfo[7].equals("null")) {
+            return new Task(taskInfo[2], taskInfo[4], StatusTask.valueOf(taskInfo[3]), Integer.parseInt(taskInfo[0]));
+        } else if (taskInfo[6].equals("null")) {
+            return new Task(taskInfo[2], taskInfo[4], StatusTask.valueOf(taskInfo[3]), Integer.parseInt(taskInfo[0]),
+                    LocalDateTime.parse(taskInfo[7]));
+        } else if (taskInfo[7].equals("null")) {
+            return new Task(taskInfo[2], taskInfo[4], StatusTask.valueOf(taskInfo[3]), Integer.parseInt(taskInfo[0]),
+                    Duration.parse(taskInfo[6]));
+        } else {
+            return new Task(taskInfo[2], taskInfo[4], StatusTask.valueOf(taskInfo[3]), Integer.parseInt(taskInfo[0]),
+                    Duration.parse(taskInfo[6]), LocalDateTime.parse(taskInfo[7]));
+        }
     }
 
     @Override

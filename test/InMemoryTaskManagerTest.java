@@ -36,9 +36,9 @@ public class InMemoryTaskManagerTest {
         manager = new InMemoryTaskManager();
         task1 = new Task("TestName1", "TestDescription1", duration1, startTime1);
         task2 = new Task("TestName4", "TestDescription4", duration1, startTime1);
-        epic1 = new Epic("TestName2", "TestDescription2", duration1, startTime1);
-        epic2 = new Epic("TestName5", "TestDescription5", duration1, startTime1);
-        epic3 = new Epic("TestName6", "TestDescription6", duration1, startTime1);
+        epic1 = new Epic("TestName2", "TestDescription2");
+        epic2 = new Epic("TestName5", "TestDescription5");
+        epic3 = new Epic("TestName6", "TestDescription6");
     }
 
     @Test
@@ -201,7 +201,7 @@ public class InMemoryTaskManagerTest {
         Assertions.assertEquals("TestDescription1Updated", manager.getTask(1).getDescription());
         Assertions.assertEquals(StatusTask.IN_PROGRESS, manager.getTask(1).getStatus());
 
-        manager.updateEpic(new Epic("TestName2Updated", "TestDescription2Updated", 2, duration1, startTime1));
+        manager.updateEpic(new Epic("TestName2Updated", "TestDescription2Updated", 2));
         Assertions.assertEquals("TestName2Updated", manager.getEpic(2).getName());
         Assertions.assertEquals("TestDescription2Updated", manager.getEpic(2).getDescription());
         Assertions.assertEquals(StatusTask.NEW, manager.getEpic(2).getStatus());
@@ -241,7 +241,7 @@ public class InMemoryTaskManagerTest {
     public void getHistoryTasks() {
         task3 = new Task("TestName9", "TestDescription9", duration1, startTime1);
         task4 = new Task("TestName10", "TestDescription10", duration1, startTime1);
-        epic3 = new Epic("TestName3", "TestDescription3", duration1, startTime1);
+        epic3 = new Epic("TestName3", "TestDescription3");
         manager.addTask(task1);
         manager.addTask(task2);
         manager.addTask(task3);

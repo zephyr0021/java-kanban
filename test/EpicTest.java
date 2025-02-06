@@ -22,7 +22,7 @@ public class EpicTest {
 
     @BeforeEach
     void setUp() {
-        epic = new Epic("TestEpic", "TestDescription", 1, duration1, startTime1);
+        epic = new Epic("TestEpic", "TestDescription", 1);
         subtask1 = new Subtask("TestSubtask1", "TestDescription1", StatusTask.NEW, 0, 2, duration1, startTime1);
         subtask2 = new Subtask("TestSubtask2", "TestDescription2", StatusTask.DONE, 0, 3, duration1, startTime1);
         subtask3 = new Subtask("TestSubtask3", "TestDescription3", StatusTask.IN_PROGRESS, 0, 4, duration1, startTime1);

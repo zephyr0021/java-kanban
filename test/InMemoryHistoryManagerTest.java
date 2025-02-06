@@ -34,9 +34,9 @@ public class InMemoryHistoryManagerTest {
         task1 = new Task("Task1", "Description1", 1, duration1, startTime1);
         task2 = new Task("Task2", "Description2", 2, duration1, startTime1);
         task3 = new Task("Task3", "Description3", 3, duration1, startTime1);
-        epic4 = new Epic("Epic4", "Description4", 4, duration1, startTime1);
-        epic5 = new Epic("Epic5", "Description5", 5, duration1, startTime1);
-        epic6 = new Epic("Epic6", "Description6", 6, duration1, startTime1);
+        epic4 = new Epic("Epic4", "Description4", 4);
+        epic5 = new Epic("Epic5", "Description5", 5);
+        epic6 = new Epic("Epic6", "Description6", 6);
         subtask7 = new Subtask("Subtask7", "Description7", 4, 7, duration1, startTime1);
         subtask8 = new Subtask("Subtask8", "Description8", 5, 8, duration1, startTime1);
         subtask9 = new Subtask("Subtask9", "Description9", 6, 9, duration1, startTime1);

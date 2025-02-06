@@ -32,9 +32,9 @@ public class TaskTest {
         subtask1 = new Subtask("TestName1", "TestDescription1", StatusTask.NEW, 0, 3, duration1, startTime1);
         subtask2 = new Subtask("TestName2", "TestDescription2", StatusTask.NEW, 0, 4, duration1, startTime1);
         subtask3 = new Subtask("TestName3", "TestDescription3", StatusTask.NEW, 0, 3, duration1, startTime1);
-        epic1 = new Epic("TestName1", "TestDescription1", 5, duration1, startTime1);
-        epic2 = new Epic("TestName2", "TestDescription2", 6, duration1, startTime1);
-        epic3 = new Epic("TestName3", "TestDescription3", 5, duration1, startTime1);
+        epic1 = new Epic("TestName1", "TestDescription1", 5);
+        epic2 = new Epic("TestName2", "TestDescription2", 6);
+        epic3 = new Epic("TestName3", "TestDescription3", 5);
     }
 
     @Test

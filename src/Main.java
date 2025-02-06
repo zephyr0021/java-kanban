@@ -189,11 +189,11 @@ public class Main {
 
     private static void printWorkingExampleWithFile(TaskManager manager) {
         manager.addTask(new Task("Выгулять собаку", "Погулять с Джеком 20 минут", Duration.ofMinutes(100), LocalDateTime.now()));
-        manager.addEpic(new Epic("Написать курсовую работу", "Написать курсовую по теме Маркетинг", Duration.ofMinutes(100), LocalDateTime.now()));
+        manager.addEpic(new Epic("Написать курсовую работу", "Написать курсовую по теме Маркетинг"));
         manager.addSubtask(new Subtask("Собрать теоретическую часть", "Искать в интернете", 2, Duration.ofMinutes(150), LocalDateTime.now()));
         manager.addSubtask(new Subtask("Сформировать содержание", "Автоматически", 2, Duration.ofMinutes(180), LocalDateTime.now()));
         manager.addSubtask(new Subtask("Выполнить практическую часть", "Провести игру", 2, Duration.ofMinutes(120), LocalDateTime.now()));
-        manager.addEpic(new Epic("Покрасить волосы", "На праздник", Duration.ofMinutes(100), LocalDateTime.now()));
+        manager.addEpic(new Epic("Покрасить волосы", "На праздник"));
         manager.addSubtask(new Subtask("Оформить реферат", "Для выступления", 6, Duration.ofMinutes(60), LocalDateTime.now()));
         System.out.println("Задачи:");
         for (Task task : manager.getTasks()) {
