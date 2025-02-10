@@ -30,12 +30,20 @@ public class InMemoryTaskManagerTest {
     Duration duration1 = Duration.ofMinutes(100);
     LocalDateTime startTime1 = LocalDateTime.of(LocalDate.of(2025,2,4),
             LocalTime.of(10,0));
+    LocalDateTime startTime2 = LocalDateTime.of(LocalDate.of(2025,2,5),
+            LocalTime.of(10,0));
+    LocalDateTime startTime3 = LocalDateTime.of(LocalDate.of(2025,2,6),
+            LocalTime.of(10,0));
+    LocalDateTime startTime4 = LocalDateTime.of(LocalDate.of(2025,2,7),
+            LocalTime.of(10,0));
+    LocalDateTime startTime5 = LocalDateTime.of(LocalDate.of(2025,2,8),
+            LocalTime.of(10,0));
 
     @BeforeEach
     public void setUp() {
         manager = new InMemoryTaskManager();
         task1 = new Task("TestName1", "TestDescription1", duration1, startTime1);
-        task2 = new Task("TestName4", "TestDescription4", duration1, startTime1);
+        task2 = new Task("TestName4", "TestDescription4", duration1, startTime2);
         epic1 = new Epic("TestName2", "TestDescription2");
         epic2 = new Epic("TestName5", "TestDescription5");
         epic3 = new Epic("TestName6", "TestDescription6");
@@ -45,7 +53,7 @@ public class InMemoryTaskManagerTest {
     public void createIdForTask() {
         manager.addTask(task1);
         manager.addEpic(epic1);
-        subtask1 = new Subtask("TestName3", "TestDescription3", epic1.getId(), duration1, startTime1);
+        subtask1 = new Subtask("TestName3", "TestDescription3", epic1.getId(), duration1, startTime3);
         manager.addSubtask(subtask1);
         Assertions.assertEquals(1, task1.getId());
         Assertions.assertEquals(2, epic1.getId());
@@ -239,8 +247,8 @@ public class InMemoryTaskManagerTest {
 
     @Test
     public void getHistoryTasks() {
-        task3 = new Task("TestName9", "TestDescription9", duration1, startTime1);
-        task4 = new Task("TestName10", "TestDescription10", duration1, startTime1);
+        task3 = new Task("TestName9", "TestDescription9", duration1, startTime3);
+        task4 = new Task("TestName10", "TestDescription10", duration1, startTime4);
         epic3 = new Epic("TestName3", "TestDescription3");
         manager.addTask(task1);
         manager.addTask(task2);
@@ -251,10 +259,10 @@ public class InMemoryTaskManagerTest {
         manager.addEpic(epic3);
 
         subtask2 = new Subtask("TestName2", "TestDescription2", epic1.getId(), duration1, startTime1);
-        subtask3 = new Subtask("TestName3", "TestDescription3", epic1.getId(), duration1, startTime1);
-        subtask4 = new Subtask("TestName4", "TestDescription4", epic2.getId(), duration1, startTime1);
-        subtask5 = new Subtask("TestName5", "TestDescription5", epic2.getId(), duration1, startTime1);
-        subtask6 = new Subtask("TestName6", "TestDescription6", epic3.getId(), duration1, startTime1);
+        subtask3 = new Subtask("TestName3", "TestDescription3", epic1.getId(), duration1, startTime2);
+        subtask4 = new Subtask("TestName4", "TestDescription4", epic2.getId(), duration1, startTime3);
+        subtask5 = new Subtask("TestName5", "TestDescription5", epic2.getId(), duration1, startTime4);
+        subtask6 = new Subtask("TestName6", "TestDescription6", epic3.getId(), duration1, startTime5);
 
         manager.addSubtask(subtask2);
         manager.addSubtask(subtask3);
