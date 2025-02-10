@@ -75,7 +75,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTask(Task task) {
-        if (task.getId() == 0) {
+        if (isIntersectionTaskTime(task)) {
+            System.out.println("Задача пересекается по времени с другими");
+        } else if (task.getId() == 0) {
             do {
                 taskId++;
                 task.setId(taskId);
@@ -91,7 +93,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void addSubtask(Subtask subtask) {
         Epic epic = epics.get(subtask.getEpicId());
-        if (epic != null) {
+        if (isIntersectionSubtaskTime(subtask)) {
+            System.out.println("Подзадача пересекается по времени с другими");
+        } else if (epic != null) {
             if (subtask.getId() == 0) {
                 do {
                     taskId++;
@@ -116,7 +120,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addEpic(Epic epic) {
-        if (epic.getId() == 0) {
+        if (isIntersectionEpicTime(epic)) {
+            System.out.println("Эпик пересекается по времени с другими");
+        } else if (epic.getId() == 0) {
             do {
                 taskId++;
                 epic.setId(taskId);
@@ -335,6 +341,42 @@ public class InMemoryTaskManager implements TaskManager {
         epic.setStartTime(epicStartTime);
         epic.setEndTime(epicEndTime);
         epic.setDuration(epicDuration);
+    }
+
+    private boolean isIntersectionTaskTime(Task task) {
+        if (!Objects.nonNull(task.getStartTime()) && !Objects.nonNull(task.getEndTime())) {
+            return false;
+        } else {
+            List<Task> intersectionsTasks = getPrioritizedTasks().stream().filter(prioritezedTask ->
+                            Objects.nonNull(prioritezedTask.getEndTime())).
+                    filter(prioritizedTask -> (prioritizedTask.getStartTime().isBefore(task.getStartTime())
+                            && prioritizedTask.getEndTime().isAfter(task.getStartTime())) ||
+                            (prioritizedTask.getStartTime().equals(task.getStartTime()) && prioritizedTask.getEndTime().equals(task.getEndTime()))).toList();
+            return !intersectionsTasks.isEmpty();
+        }
+    }
+
+    private boolean isIntersectionEpicTime(Epic epic) {
+        if (!Objects.nonNull(epic.getStartTime()) && !Objects.nonNull(epic.getEndTime())) {
+            return false;
+        } else {
+            List<Epic> intersectionsEpics = getPrioritizedEpics().stream().filter(prioritezedEpic ->
+                            Objects.nonNull(prioritezedEpic.getEndTime())).
+                    filter(prioritizedEpic -> (prioritizedEpic.getStartTime().isBefore(epic.getStartTime())
+                            && prioritizedEpic.getEndTime().isAfter(epic.getStartTime()))).toList();
+            return !intersectionsEpics.isEmpty();
+        }
+    }
+
+    private boolean isIntersectionSubtaskTime(Subtask subtask) {
+        if (!Objects.nonNull(subtask.getStartTime()) && !Objects.nonNull(subtask.getEndTime())) {
+            return false;
+        } else {
+            List<Subtask> intersectionsSubtasks = getPrioritizedSubtasks().stream().filter(prioritezedSubtask -> Objects.nonNull(prioritezedSubtask.getEndTime())).
+                    filter(prioritezedSubtask -> (prioritezedSubtask.getStartTime().isBefore(subtask.getStartTime())
+                            && prioritezedSubtask.getEndTime().isAfter(subtask.getStartTime()))).toList();
+            return !intersectionsSubtasks.isEmpty();
+        }
     }
 
 }
