@@ -26,8 +26,8 @@ public class InMemoryHistoryManagerTest {
     static Subtask subtask11;
     static Subtask subtask12;
     static Duration duration1 = Duration.ofMinutes(100);
-    static LocalDateTime startTime1 = LocalDateTime.of(LocalDate.of(2025,2,4),
-            LocalTime.of(10,0));
+    static LocalDateTime startTime1 = LocalDateTime.of(LocalDate.of(2025, 2, 4),
+            LocalTime.of(10, 0));
 
     @BeforeAll
     public static void setup() {

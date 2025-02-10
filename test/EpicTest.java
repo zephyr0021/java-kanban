@@ -17,8 +17,8 @@ public class EpicTest {
     Subtask subtask2;
     Subtask subtask3;
     Duration duration1 = Duration.ofMinutes(100);
-    LocalDateTime startTime1 = LocalDateTime.of(LocalDate.of(2025,2,4),
-            LocalTime.of(10,0));
+    LocalDateTime startTime1 = LocalDateTime.of(LocalDate.of(2025, 2, 4),
+            LocalTime.of(10, 0));
 
     @BeforeEach
     void setUp() {

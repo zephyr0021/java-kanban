@@ -28,16 +28,16 @@ public class InMemoryTaskManagerTest {
     Subtask subtask5;
     Subtask subtask6;
     Duration duration1 = Duration.ofMinutes(100);
-    LocalDateTime startTime1 = LocalDateTime.of(LocalDate.of(2025,2,4),
-            LocalTime.of(10,0));
-    LocalDateTime startTime2 = LocalDateTime.of(LocalDate.of(2025,2,5),
-            LocalTime.of(10,0));
-    LocalDateTime startTime3 = LocalDateTime.of(LocalDate.of(2025,2,6),
-            LocalTime.of(10,0));
-    LocalDateTime startTime4 = LocalDateTime.of(LocalDate.of(2025,2,7),
-            LocalTime.of(10,0));
-    LocalDateTime startTime5 = LocalDateTime.of(LocalDate.of(2025,2,8),
-            LocalTime.of(10,0));
+    LocalDateTime startTime1 = LocalDateTime.of(LocalDate.of(2025, 2, 4),
+            LocalTime.of(10, 0));
+    LocalDateTime startTime2 = LocalDateTime.of(LocalDate.of(2025, 2, 5),
+            LocalTime.of(10, 0));
+    LocalDateTime startTime3 = LocalDateTime.of(LocalDate.of(2025, 2, 6),
+            LocalTime.of(10, 0));
+    LocalDateTime startTime4 = LocalDateTime.of(LocalDate.of(2025, 2, 7),
+            LocalTime.of(10, 0));
+    LocalDateTime startTime5 = LocalDateTime.of(LocalDate.of(2025, 2, 8),
+            LocalTime.of(10, 0));
 
     @BeforeEach
     public void setUp() {
@@ -75,6 +75,36 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
+    public void addTaskWithTimeIntersection() {
+        manager.addTask(task1);
+        task2 = new Task("TestName2", "TestDescription2", duration1, LocalDateTime.of(LocalDate.of(2025, 2, 4),
+                LocalTime.of(10, 5)));
+        manager.addTask(task2);
+        Assertions.assertEquals(1, manager.getTasks().size());
+        task3 = new Task("TestName3", "TestDescription3", duration1, startTime1);
+        Assertions.assertEquals(1, manager.getTasks().size());
+        task4 = new Task("TestName4", "TestDescription4", duration1, startTime2);
+        manager.addTask(task4);
+        Assertions.assertEquals(2, manager.getTasks().size());
+    }
+
+    @Test
+    public void addSubtaskWithTimeIntersection() {
+        manager.addEpic(epic1);
+        subtask1 = new Subtask("TestName3", "TestDescription3", epic1.getId(), duration1, startTime1);
+        manager.addSubtask(subtask1);
+        subtask2 = new Subtask("TestName4", "TestDescription4", epic1.getId(), duration1, LocalDateTime.of(LocalDate.of(2025, 2, 4),
+                LocalTime.of(10, 5)));
+        manager.addSubtask(subtask2);
+        Assertions.assertEquals(1, manager.getSubtasks().size());
+        subtask3 = new Subtask("TestName3", "TestDescription3", epic1.getId(), duration1, startTime1);
+        Assertions.assertEquals(1, manager.getSubtasks().size());
+        subtask4 = new Subtask("TestName4", "TestDescription4", epic1.getId(), duration1, startTime2);
+        manager.addSubtask(subtask4);
+        Assertions.assertEquals(2, manager.getSubtasks().size());
+    }
+
+    @Test
     public void addSubtaskInEpic() {
         manager.addEpic(epic1);
         subtask1 = new Subtask("TestName3", "TestDescription3", epic1.getId(), duration1, startTime1);
@@ -97,6 +127,60 @@ public class InMemoryTaskManagerTest {
         Assertions.assertEquals(task1, manager.getTask(1));
         Assertions.assertEquals(epic1, manager.getEpic(2));
         Assertions.assertEquals(subtask1, manager.getSubtask(3));
+    }
+
+    @Test
+    public void getPrioritizedTasks() {
+        task1 = new Task("TestName1", "TestDescription1", duration1, startTime1);
+        task2 = new Task("TestName2", "TestDescription2", duration1, startTime2);
+        task3 = new Task("TestName3", "TestDescription3", duration1, startTime3);
+        manager.addTask(task2);
+        manager.addTask(task1);
+        manager.addTask(task3);
+        ArrayList<Task> prioritizedTasks = new ArrayList<>(manager.getPrioritizedTasks());
+        ArrayList<Task> expectedPrioritizedTasks = new ArrayList<>();
+        expectedPrioritizedTasks.add(task1);
+        expectedPrioritizedTasks.add(task2);
+        expectedPrioritizedTasks.add(task3);
+        Assertions.assertEquals(expectedPrioritizedTasks, prioritizedTasks);
+    }
+
+    @Test
+    public void getPrioritizedSubtasks() {
+        manager.addEpic(epic1);
+        subtask1 = new Subtask("TestName3", "TestDescription3", epic1.getId(), duration1, startTime1);
+        subtask2 = new Subtask("TestName4", "TestDescription4", epic1.getId(), duration1, startTime2);
+        subtask3 = new Subtask("TestName5", "TestDescription5", epic1.getId(), duration1, startTime3);
+        manager.addSubtask(subtask3);
+        manager.addSubtask(subtask2);
+        manager.addSubtask(subtask1);
+        ArrayList<Subtask> prioritizedSubtasks = new ArrayList<>(manager.getPrioritizedSubtasks());
+        ArrayList<Subtask> expectedPrioritizedSubtasks = new ArrayList<>();
+        expectedPrioritizedSubtasks.add(subtask1);
+        expectedPrioritizedSubtasks.add(subtask2);
+        expectedPrioritizedSubtasks.add(subtask3);
+        Assertions.assertEquals(expectedPrioritizedSubtasks, prioritizedSubtasks);
+    }
+
+    @Test
+    public void getPrioritizedEpics() {
+        manager.addEpic(epic1);
+        epic2 = new Epic("TestName2", "TestDescription2");
+        manager.addEpic(epic2);
+        epic3 = new Epic("TestName3", "TestDescription3");
+        manager.addEpic(epic3);
+        subtask1 = new Subtask("TestName3", "TestDescription3", epic1.getId(), duration1, startTime1);
+        subtask2 = new Subtask("TestName3", "TestDescription3", epic2.getId(), duration1, startTime2);
+        subtask3 = new Subtask("TestName3", "TestDescription3", epic3.getId(), duration1, startTime3);
+        manager.addSubtask(subtask1);
+        manager.addSubtask(subtask3);
+        manager.addSubtask(subtask2);
+        ArrayList<Epic> prioritizedEpics = new ArrayList<>(manager.getPrioritizedEpics());
+        ArrayList<Epic> expectedPrioritizedEpics = new ArrayList<>();
+        expectedPrioritizedEpics.add(epic1);
+        expectedPrioritizedEpics.add(epic2);
+        expectedPrioritizedEpics.add(epic3);
+        Assertions.assertEquals(expectedPrioritizedEpics, prioritizedEpics);
     }
 
     @Test

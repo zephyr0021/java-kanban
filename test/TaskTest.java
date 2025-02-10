@@ -20,8 +20,8 @@ public class TaskTest {
     Epic epic2;
     Epic epic3;
     Duration duration1 = Duration.ofMinutes(100);
-    LocalDateTime startTime1 = LocalDateTime.of(LocalDate.of(2025,2,4),
-            LocalTime.of(10,0));
+    LocalDateTime startTime1 = LocalDateTime.of(LocalDate.of(2025, 2, 4),
+            LocalTime.of(10, 0));
 
 
     @BeforeEach

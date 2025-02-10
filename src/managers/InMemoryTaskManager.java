@@ -372,7 +372,9 @@ public class InMemoryTaskManager implements TaskManager {
         if (!Objects.nonNull(subtask.getStartTime()) && !Objects.nonNull(subtask.getEndTime())) {
             return false;
         } else {
-            List<Subtask> intersectionsSubtasks = getPrioritizedSubtasks().stream().filter(prioritezedSubtask -> Objects.nonNull(prioritezedSubtask.getEndTime())).
+            List<Subtask> intersectionsSubtasks = getPrioritizedSubtasks().stream().
+                    filter(prioritezedSubtask -> prioritezedSubtask.getEpicId() == subtask.getEpicId()).
+                    filter(prioritezedSubtask -> Objects.nonNull(prioritezedSubtask.getEndTime())).
                     filter(prioritezedSubtask -> (prioritezedSubtask.getStartTime().isBefore(subtask.getStartTime())
                             && prioritezedSubtask.getEndTime().isAfter(subtask.getStartTime()))).toList();
             return !intersectionsSubtasks.isEmpty();
