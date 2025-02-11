@@ -107,7 +107,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             ArrayList<String> tasks = new ArrayList<>(buffer.lines().toList());
             String header = "id,type,name,status,description,epic,duration,start_time,end_time";
             tasks.remove(header);
-            for (String task : tasks) {
+            tasks.forEach(task -> {
                 String[] taskInfo = task.split(",");
                 switch (TaskType.valueOf(taskInfo[1])) {
                     case TaskType.TASK:
@@ -122,7 +122,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     default:
                         System.out.println("Не определена задача в файле");
                 }
-            }
+            });
             return manager;
         } catch (IOException e) {
             throw new ManagerLoadFromFileException("Возникла ошибка при загрузке данных из файла", file);

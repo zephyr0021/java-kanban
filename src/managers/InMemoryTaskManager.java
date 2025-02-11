@@ -55,12 +55,8 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public ArrayList<Subtask> getEpicSubtasks(int epicId) {
         Epic epic = epics.get(epicId);
-        ArrayList<Subtask> epicSubtasks = new ArrayList<>();
         if (epic != null) {
-            for (Integer subtaskId : epic.getSubtasks()) {
-                epicSubtasks.add(subtasks.get(subtaskId));
-            }
-            return epicSubtasks;
+            return epic.getSubtasks().stream().map(subtasks::get).collect(Collectors.toCollection(ArrayList::new));
         } else {
             System.out.println("Эпик не найден!");
             return null;
@@ -160,43 +156,35 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.remove(id);
         historyManager.remove(id);
         if (epic != null) {
-            for (Integer subtaskId : epic.getSubtasks()) {
+            epic.getSubtasks().forEach(subtaskId-> {
                 subtasks.remove(subtaskId);
                 historyManager.remove(subtaskId);
-            }
+            });
         }
-
-
     }
 
     @Override
     public void clearTasks() {
-        for (Integer taskId : tasks.keySet()) {
-            historyManager.remove(taskId);
-        }
+        tasks.keySet().forEach(historyManager::remove);
         tasks.clear();
     }
 
     @Override
     public void clearSubtasks() {
-        for (Epic epic : epics.values()) {
+        epics.values().forEach(epic -> {
             epic.clearSubtaskList();
             epic.setStatus(StatusTask.NEW);
-        }
-        for (Integer subtaskId : subtasks.keySet()) {
-            historyManager.remove(subtaskId);
-        }
+        });
+        subtasks.keySet().forEach(historyManager::remove);
         subtasks.clear();
     }
 
     @Override
     public void clearEpics() {
-        for (Epic epic : epics.values()) {
+        epics.values().forEach(epic -> {
             historyManager.remove(epic.getId());
-            for (Integer subtaskId : epic.getSubtasks()) {
-                historyManager.remove(subtaskId);
-            }
-        }
+            epic.getSubtasks().forEach(historyManager::remove);
+        });
         epics.clear();
         subtasks.clear();
     }
