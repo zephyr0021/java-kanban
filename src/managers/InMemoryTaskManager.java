@@ -156,7 +156,7 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.remove(id);
         historyManager.remove(id);
         if (epic != null) {
-            epic.getSubtasks().forEach(subtaskId-> {
+            epic.getSubtasks().forEach(subtaskId -> {
                 subtasks.remove(subtaskId);
                 historyManager.remove(subtaskId);
             });
@@ -229,9 +229,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public TreeSet<Task> getPrioritizedTasks() {
-        ArrayList<Task> tasksWithoutTimeNulls = tasks.values().stream().
-                filter(task -> Objects.nonNull(task.getStartTime())).
-                collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Task> tasksWithoutTimeNulls = tasks.values().stream()
+                .filter(task -> Objects.nonNull(task.getStartTime()))
+                .collect(Collectors.toCollection(ArrayList::new));
 
         Comparator<Task> comparator = new Comparator<Task>() {
 
