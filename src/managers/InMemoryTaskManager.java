@@ -250,9 +250,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public TreeSet<Subtask> getPrioritizedSubtasks() {
-        ArrayList<Subtask> subtasksWithoutTimeNulls = subtasks.values().stream().
-                filter(task -> Objects.nonNull(task.getStartTime())).
-                collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Subtask> subtasksWithoutTimeNulls = subtasks.values().stream()
+                .filter(task -> Objects.nonNull(task.getStartTime()))
+                .collect(Collectors.toCollection(ArrayList::new));
 
         Comparator<Task> comparator = new Comparator<Task>() {
 
@@ -271,9 +271,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public TreeSet<Epic> getPrioritizedEpics() {
-        ArrayList<Epic> epicsWithoutTimeNulls = epics.values().stream().
-                filter(task -> Objects.nonNull(task.getStartTime())).
-                collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Epic> epicsWithoutTimeNulls = epics.values().stream()
+                .filter(task -> Objects.nonNull(task.getStartTime()))
+                .collect(Collectors.toCollection(ArrayList::new));
 
         Comparator<Task> comparator = new Comparator<Task>() {
 
@@ -320,12 +320,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void updateEpicTimeInfo(int epicId) {
         Epic epic = epics.get(epicId);
-        LocalDateTime epicStartTime = epic.getSubtasks().stream().map(subtaskId -> subtasks.get(subtaskId).
-                getStartTime()).filter(Objects::nonNull).min(Comparator.naturalOrder()).orElse(null);
-        LocalDateTime epicEndTime = epic.getSubtasks().stream().map(subtaskId -> subtasks.get(subtaskId).
-                getEndTime()).filter(Objects::nonNull).max(Comparator.naturalOrder()).orElse(null);
-        Duration epicDuration = epic.getSubtasks().stream().map(subtaskId -> subtasks.get(subtaskId).getDuration()).
-                filter(Objects::nonNull).reduce(Duration.ZERO, Duration::plus);
+        LocalDateTime epicStartTime = epic.getSubtasks().stream().map(subtaskId -> subtasks.get(subtaskId)
+                .getStartTime()).filter(Objects::nonNull).min(Comparator.naturalOrder()).orElse(null);
+        LocalDateTime epicEndTime = epic.getSubtasks().stream().map(subtaskId -> subtasks.get(subtaskId)
+                .getEndTime()).filter(Objects::nonNull).max(Comparator.naturalOrder()).orElse(null);
+        Duration epicDuration = epic.getSubtasks().stream().map(subtaskId -> subtasks.get(subtaskId).getDuration())
+                .filter(Objects::nonNull).reduce(Duration.ZERO, Duration::plus);
         epic.setStartTime(epicStartTime);
         epic.setEndTime(epicEndTime);
         epic.setDuration(epicDuration);
@@ -336,8 +336,8 @@ public class InMemoryTaskManager implements TaskManager {
             return false;
         } else {
             List<Task> intersectionsTasks = getPrioritizedTasks().stream().filter(prioritezedTask ->
-                            Objects.nonNull(prioritezedTask.getEndTime())).
-                    filter(prioritizedTask -> (prioritizedTask.getStartTime().isBefore(task.getStartTime())
+                            Objects.nonNull(prioritezedTask.getEndTime()))
+                    .filter(prioritizedTask -> (prioritizedTask.getStartTime().isBefore(task.getStartTime())
                             && prioritizedTask.getEndTime().isAfter(task.getStartTime())) ||
                             (prioritizedTask.getStartTime().equals(task.getStartTime()) && prioritizedTask.getEndTime().equals(task.getEndTime()))).toList();
             return !intersectionsTasks.isEmpty();
@@ -349,8 +349,8 @@ public class InMemoryTaskManager implements TaskManager {
             return false;
         } else {
             List<Epic> intersectionsEpics = getPrioritizedEpics().stream().filter(prioritezedEpic ->
-                            Objects.nonNull(prioritezedEpic.getEndTime())).
-                    filter(prioritizedEpic -> (prioritizedEpic.getStartTime().isBefore(epic.getStartTime())
+                            Objects.nonNull(prioritezedEpic.getEndTime()))
+                    .filter(prioritizedEpic -> (prioritizedEpic.getStartTime().isBefore(epic.getStartTime())
                             && prioritizedEpic.getEndTime().isAfter(epic.getStartTime()))).toList();
             return !intersectionsEpics.isEmpty();
         }
@@ -360,10 +360,10 @@ public class InMemoryTaskManager implements TaskManager {
         if (!Objects.nonNull(subtask.getStartTime()) && !Objects.nonNull(subtask.getEndTime())) {
             return false;
         } else {
-            List<Subtask> intersectionsSubtasks = getPrioritizedSubtasks().stream().
-                    filter(prioritezedSubtask -> prioritezedSubtask.getEpicId() == subtask.getEpicId()).
-                    filter(prioritezedSubtask -> Objects.nonNull(prioritezedSubtask.getEndTime())).
-                    filter(prioritezedSubtask -> (prioritezedSubtask.getStartTime().isBefore(subtask.getStartTime())
+            List<Subtask> intersectionsSubtasks = getPrioritizedSubtasks().stream()
+                    .filter(prioritezedSubtask -> prioritezedSubtask.getEpicId() == subtask.getEpicId())
+                    .filter(prioritezedSubtask -> Objects.nonNull(prioritezedSubtask.getEndTime()))
+                    .filter(prioritezedSubtask -> (prioritezedSubtask.getStartTime().isBefore(subtask.getStartTime())
                             && prioritezedSubtask.getEndTime().isAfter(subtask.getStartTime()))).toList();
             return !intersectionsSubtasks.isEmpty();
         }
