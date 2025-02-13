@@ -15,6 +15,14 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HistoryManager historyManager = Managers.getDefaultHistory();
     private int taskId = 0;
+    private final Comparator<Task> comparator = new Comparator<>() {
+
+        @Override
+        public int compare(Task o1, Task o2) {
+            return o1.getStartTime().compareTo(o2.getStartTime());
+        }
+    };
+    private final TreeSet<Task> prioritizedTasks = new TreeSet<>(comparator);
 
     @Override
     public ArrayList<Task> getTasks() {
@@ -89,7 +97,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void addSubtask(Subtask subtask) {
         Epic epic = epics.get(subtask.getEpicId());
-        if (isIntersectionSubtaskTime(subtask)) {
+        if (isIntersectionTaskTime(subtask)) {
             System.out.println("Подзадача пересекается по времени с другими");
         } else if (epic != null) {
             if (subtask.getId() == 0) {
@@ -116,7 +124,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addEpic(Epic epic) {
-        if (isIntersectionEpicTime(epic)) {
+        if (isIntersectionTaskTime(epic)) {
             System.out.println("Эпик пересекается по времени с другими");
         } else if (epic.getId() == 0) {
             do {
@@ -196,7 +204,8 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Не существует такой задачи");
             return;
         }
-
+        prioritizedTasks.remove(tasks.get(id));
+        prioritizedTasks.add(task);
         tasks.put(id, task);
     }
 
@@ -207,7 +216,8 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Не существует такой подзадачи!");
             return;
         }
-
+        prioritizedTasks.remove(subtasks.get(id));
+        prioritizedTasks.add(subtask);
         subtasks.put(id, subtask);
         updateEpicStatus(subtask.getEpicId());
         updateEpicTimeInfo(subtask.getEpicId());
@@ -232,62 +242,14 @@ public class InMemoryTaskManager implements TaskManager {
         ArrayList<Task> tasksWithoutTimeNulls = tasks.values().stream()
                 .filter(task -> Objects.nonNull(task.getStartTime()))
                 .collect(Collectors.toCollection(ArrayList::new));
-
-        Comparator<Task> comparator = new Comparator<Task>() {
-
-            @Override
-            public int compare(Task o1, Task o2) {
-                return o1.getStartTime().compareTo(o2.getStartTime());
-            }
-        };
-
-        TreeSet<Task> prioritizedTasks = new TreeSet<>(comparator);
-
-        prioritizedTasks.addAll(tasksWithoutTimeNulls);
-
-        return prioritizedTasks;
-    }
-
-    @Override
-    public TreeSet<Subtask> getPrioritizedSubtasks() {
         ArrayList<Subtask> subtasksWithoutTimeNulls = subtasks.values().stream()
                 .filter(task -> Objects.nonNull(task.getStartTime()))
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        Comparator<Task> comparator = new Comparator<Task>() {
+        prioritizedTasks.addAll(tasksWithoutTimeNulls);
+        prioritizedTasks.addAll(subtasksWithoutTimeNulls);
 
-            @Override
-            public int compare(Task o1, Task o2) {
-                return o1.getStartTime().compareTo(o2.getStartTime());
-            }
-        };
-
-        TreeSet<Subtask> prioritizedSubtasks = new TreeSet<>(comparator);
-
-        prioritizedSubtasks.addAll(subtasksWithoutTimeNulls);
-
-        return prioritizedSubtasks;
-    }
-
-    @Override
-    public TreeSet<Epic> getPrioritizedEpics() {
-        ArrayList<Epic> epicsWithoutTimeNulls = epics.values().stream()
-                .filter(task -> Objects.nonNull(task.getStartTime()))
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        Comparator<Task> comparator = new Comparator<Task>() {
-
-            @Override
-            public int compare(Task o1, Task o2) {
-                return o1.getStartTime().compareTo(o2.getStartTime());
-            }
-        };
-
-        TreeSet<Epic> prioritizedEpics = new TreeSet<>(comparator);
-
-        prioritizedEpics.addAll(epicsWithoutTimeNulls);
-
-        return prioritizedEpics;
+        return prioritizedTasks;
     }
 
     private <T extends Task> boolean checkContainsAllTasks(T task) {
@@ -341,31 +303,6 @@ public class InMemoryTaskManager implements TaskManager {
                             && prioritizedTask.getEndTime().isAfter(task.getStartTime())) ||
                             (prioritizedTask.getStartTime().equals(task.getStartTime()) && prioritizedTask.getEndTime().equals(task.getEndTime()))).toList();
             return !intersectionsTasks.isEmpty();
-        }
-    }
-
-    private boolean isIntersectionEpicTime(Epic epic) {
-        if (!Objects.nonNull(epic.getStartTime()) && !Objects.nonNull(epic.getEndTime())) {
-            return false;
-        } else {
-            List<Epic> intersectionsEpics = getPrioritizedEpics().stream().filter(prioritezedEpic ->
-                            Objects.nonNull(prioritezedEpic.getEndTime()))
-                    .filter(prioritizedEpic -> (prioritizedEpic.getStartTime().isBefore(epic.getStartTime())
-                            && prioritizedEpic.getEndTime().isAfter(epic.getStartTime()))).toList();
-            return !intersectionsEpics.isEmpty();
-        }
-    }
-
-    private boolean isIntersectionSubtaskTime(Subtask subtask) {
-        if (!Objects.nonNull(subtask.getStartTime()) && !Objects.nonNull(subtask.getEndTime())) {
-            return false;
-        } else {
-            List<Subtask> intersectionsSubtasks = getPrioritizedSubtasks().stream()
-                    .filter(prioritezedSubtask -> prioritezedSubtask.getEpicId() == subtask.getEpicId())
-                    .filter(prioritezedSubtask -> Objects.nonNull(prioritezedSubtask.getEndTime()))
-                    .filter(prioritezedSubtask -> (prioritezedSubtask.getStartTime().isBefore(subtask.getStartTime())
-                            && prioritezedSubtask.getEndTime().isAfter(subtask.getStartTime()))).toList();
-            return !intersectionsSubtasks.isEmpty();
         }
     }
 

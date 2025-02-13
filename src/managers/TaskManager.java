@@ -25,10 +25,6 @@ public interface TaskManager {
 
     TreeSet<Task> getPrioritizedTasks();
 
-    TreeSet<Subtask> getPrioritizedSubtasks();
-
-    TreeSet<Epic> getPrioritizedEpics();
-
     void addTask(Task task);
 
     void addSubtask(Subtask subtask);

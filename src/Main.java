@@ -247,8 +247,6 @@ public class Main {
         manager.addEpic(new Epic("Выгулять собаку5", "Погулять с Джеком 20 минут5"));
         manager.addSubtask(new Subtask("Выгулять собаку6", "Погулять с Джеком 20 минут6", 6, Duration.ofMinutes(100), LocalDateTime.of(2025, 6, 2, 10, 0)));
         manager.getPrioritizedTasks().forEach(System.out::println);
-        manager.getPrioritizedSubtasks().forEach(System.out::println);
-        manager.getPrioritizedEpics().forEach(System.out::println);
     }
 
 //    private static void printWorkingExampleFromFile(File file) {

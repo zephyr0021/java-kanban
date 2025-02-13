@@ -37,6 +37,8 @@ public class FileBackendTaskManagerTest {
             LocalTime.of(10, 0));
     LocalDateTime startTime5 = LocalDateTime.of(LocalDate.of(2025, 2, 8),
             LocalTime.of(10, 0));
+    LocalDateTime startTime6 = LocalDateTime.of(LocalDate.of(2025, 2, 9),
+            LocalTime.of(10, 0));
 
     @BeforeEach
     public void setUp() throws IOException {
@@ -97,7 +99,7 @@ public class FileBackendTaskManagerTest {
         task1 = new Task("TestName1", "TestDescription1", 1, duration1, startTime1);
         task2 = new Task("TestName4", "TestDescription4", 2, duration1, startTime2);
         epic1 = new Epic("TestName2", "TestDescription2", 3);
-        subtask1 = new Subtask("TestName8", "TestDescription8", 3, 4, duration1, startTime1);
+        subtask1 = new Subtask("TestName8", "TestDescription8", 3, 4, duration1, startTime3);
         try (FileWriter writer = new FileWriter(testTmpFile)) {
             writer.write(String.format("%s\n", header));
             writer.write(String.format("%s\n", task1.toString()));
@@ -135,7 +137,7 @@ public class FileBackendTaskManagerTest {
         Task task3 = new Task("TestName1", "TestDescription1", duration1, startTime4);
         Task task4 = new Task("TestName4", "TestDescription4", duration1, startTime5);
         Epic epic4 = new Epic("TestName4", "TestDescription4");
-        Subtask subtask4 = new Subtask("TestName8", "TestDescription8", 7, duration1, startTime4);
+        Subtask subtask4 = new Subtask("TestName8", "TestDescription8", 7, duration1, startTime6);
         manager.addTask(task3);
         manager.addTask(task4);
         manager.addEpic(epic4);
