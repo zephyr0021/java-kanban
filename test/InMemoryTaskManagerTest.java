@@ -46,8 +46,6 @@ public class InMemoryTaskManagerTest {
             LocalTime.of(10, 0));
     LocalDateTime startTime9 = LocalDateTime.of(LocalDate.of(2025, 2, 12),
             LocalTime.of(10, 0));
-    LocalDateTime startTime10 = LocalDateTime.of(LocalDate.of(2025, 2, 13),
-            LocalTime.of(10, 0));
 
 
     @BeforeEach
@@ -209,6 +207,46 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
+    public void deleteTasksAndSubtasksInPrioritized() {
+        manager.addEpic(epic1);
+        task1 = new Task("TestName1", "TestDescription1", duration1, startTime1);
+        task2 = new Task("TestName2", "TestDescription2", duration1, startTime2);
+        task3 = new Task("TestName3", "TestDescription3", duration1, startTime3);
+        subtask1 = new Subtask("TestName3", "TestDescription3", epic1.getId(), duration1, startTime4);
+        subtask2 = new Subtask("TestName4", "TestDescription4", epic1.getId(), duration1, startTime5);
+        subtask3 = new Subtask("TestName5", "TestDescription5", epic1.getId(), duration1, startTime6);
+        manager.addTask(task2);
+        manager.addSubtask(subtask2);
+        manager.addSubtask(subtask1);
+        manager.addTask(task1);
+        manager.addTask(task3);
+        manager.addSubtask(subtask3);
+        manager.deleteTask(5);
+        manager.deleteSubtask(4);
+        ArrayList<Task> expectedPrioritizedTasks = new ArrayList<>();
+        expectedPrioritizedTasks.add(task2);
+        expectedPrioritizedTasks.add(task3);
+        expectedPrioritizedTasks.add(subtask2);
+        expectedPrioritizedTasks.add(subtask3);
+        ArrayList<Task> prioritizedTasks = new ArrayList<>(manager.getPrioritizedTasks());
+        Assertions.assertEquals(expectedPrioritizedTasks, prioritizedTasks);
+
+    }
+
+    @Test
+    public void deleteSubtasksInPrioritizedWhenEpicDelete() {
+        manager.addEpic(epic1);
+        subtask1 = new Subtask("TestName3", "TestDescription3", epic1.getId(), duration1, startTime4);
+        subtask2 = new Subtask("TestName4", "TestDescription4", epic1.getId(), duration1, startTime5);
+        subtask3 = new Subtask("TestName5", "TestDescription5", epic1.getId(), duration1, startTime6);
+        manager.addSubtask(subtask2);
+        manager.addSubtask(subtask1);
+        manager.addSubtask(subtask3);
+        manager.deleteEpic(1);
+        Assertions.assertTrue(manager.getPrioritizedTasks().isEmpty());
+    }
+
+    @Test
     public void clearTasks() {
         manager.addTask(task1);
         manager.addTask(task2);
@@ -262,6 +300,46 @@ public class InMemoryTaskManagerTest {
         Assertions.assertEquals(0, epic2.getSubtasks().size());
         Assertions.assertEquals(StatusTask.NEW, epic1.getStatus());
         Assertions.assertEquals(StatusTask.NEW, epic2.getStatus());
+    }
+
+    @Test
+    public void clearTasksAndSubtasksInPrioritized() {
+        manager.addEpic(epic1);
+        task1 = new Task("TestName1", "TestDescription1", duration1, startTime1);
+        task2 = new Task("TestName2", "TestDescription2", duration1, startTime2);
+        task3 = new Task("TestName3", "TestDescription3", duration1, startTime3);
+        subtask1 = new Subtask("TestName3", "TestDescription3", epic1.getId(), duration1, startTime4);
+        subtask2 = new Subtask("TestName4", "TestDescription4", epic1.getId(), duration1, startTime5);
+        subtask3 = new Subtask("TestName5", "TestDescription5", epic1.getId(), duration1, startTime6);
+        manager.addTask(task2);
+        manager.addSubtask(subtask2);
+        manager.addSubtask(subtask1);
+        manager.addTask(task1);
+        manager.addTask(task3);
+        manager.addSubtask(subtask3);
+        manager.clearTasks();
+        manager.clearSubtasks();
+        Assertions.assertTrue(manager.getPrioritizedTasks().isEmpty());
+    }
+
+    @Test
+    public void clearSubtasksInPrioritizedWhenClearEpics() {
+        manager.addEpic(epic1);
+        manager.addEpic(epic2);
+        subtask1 = new Subtask("TestName3", "TestDescription3", epic1.getId(), duration1, startTime1);
+        subtask2 = new Subtask("TestName4", "TestDescription4", epic2.getId(), duration1, startTime2);
+        subtask3 = new Subtask("TestName5", "TestDescription5", epic2.getId(), duration1, startTime3);
+        subtask4 = new Subtask("TestName3", "TestDescription3", epic1.getId(), duration1, startTime4);
+        subtask5 = new Subtask("TestName4", "TestDescription4", epic2.getId(), duration1, startTime5);
+        subtask6 = new Subtask("TestName5", "TestDescription5", epic1.getId(), duration1, startTime6);
+        manager.addSubtask(subtask5);
+        manager.addSubtask(subtask4);
+        manager.addSubtask(subtask1);
+        manager.addSubtask(subtask3);
+        manager.addSubtask(subtask2);
+        manager.addSubtask(subtask6);
+        manager.clearEpics();
+        Assertions.assertTrue(manager.getPrioritizedTasks().isEmpty());
     }
 
     @Test
