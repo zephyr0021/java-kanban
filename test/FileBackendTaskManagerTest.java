@@ -8,10 +8,14 @@ import tasks.Subtask;
 import tasks.Task;
 
 import java.io.*;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class FileBackendTaskManagerTest {
-    String header = "id,type,name,status,description,epic";
+    String header = "id,type,name,status,description,epic,duration,start_time,end_time";
     FileBackedTaskManager manager;
     File testTmpFile;
     Task task1;
@@ -22,19 +26,32 @@ public class FileBackendTaskManagerTest {
     Subtask subtask1;
     Subtask subtask2;
     Subtask subtask3;
+    Duration duration1 = Duration.ofMinutes(100);
+    LocalDateTime startTime1 = LocalDateTime.of(LocalDate.of(2025, 2, 4),
+            LocalTime.of(10, 0));
+    LocalDateTime startTime2 = LocalDateTime.of(LocalDate.of(2025, 2, 5),
+            LocalTime.of(10, 0));
+    LocalDateTime startTime3 = LocalDateTime.of(LocalDate.of(2025, 2, 6),
+            LocalTime.of(10, 0));
+    LocalDateTime startTime4 = LocalDateTime.of(LocalDate.of(2025, 2, 7),
+            LocalTime.of(10, 0));
+    LocalDateTime startTime5 = LocalDateTime.of(LocalDate.of(2025, 2, 8),
+            LocalTime.of(10, 0));
+    LocalDateTime startTime6 = LocalDateTime.of(LocalDate.of(2025, 2, 9),
+            LocalTime.of(10, 0));
 
     @BeforeEach
     public void setUp() throws IOException {
 
         testTmpFile = File.createTempFile("manager", ".csv");
         manager = new FileBackedTaskManager(testTmpFile);
-        task1 = new Task("TestName1", "TestDescription1");
-        task2 = new Task("TestName4", "TestDescription4");
+        task1 = new Task("TestName1", "TestDescription1", duration1, startTime1);
+        task2 = new Task("TestName4", "TestDescription4", duration1, startTime2);
         epic1 = new Epic("TestName2", "TestDescription2");
         epic2 = new Epic("TestName5", "TestDescription5");
         epic3 = new Epic("TestName6", "TestDescription6");
-        subtask2 = new Subtask("TestName8", "TestDescription8", 4);
-        subtask3 = new Subtask("TestName9", "TestDescription9", 5);
+        subtask2 = new Subtask("TestName8", "TestDescription8", 4, duration1, startTime1);
+        subtask3 = new Subtask("TestName9", "TestDescription9", 5, duration1, startTime2);
     }
 
     @AfterEach
@@ -61,7 +78,7 @@ public class FileBackendTaskManagerTest {
     public void saveTasksFileFromManager() {
         manager.addTask(task1);
         manager.addEpic(epic1);
-        manager.addSubtask(new Subtask("TestName7", "TestDescription7", 2));
+        manager.addSubtask(new Subtask("TestName7", "TestDescription7", 2, duration1, startTime3));
         try (BufferedReader buffer = new BufferedReader(new FileReader(testTmpFile))) {
             ArrayList<String> tasks = new ArrayList<>(buffer.lines().toList());
             tasks.remove(header);
@@ -79,10 +96,10 @@ public class FileBackendTaskManagerTest {
 
     @Test
     public void loadTasksFromFileToManager() {
-        task1 = new Task("TestName1", "TestDescription1", 1);
-        task2 = new Task("TestName4", "TestDescription4", 2);
+        task1 = new Task("TestName1", "TestDescription1", 1, duration1, startTime1);
+        task2 = new Task("TestName4", "TestDescription4", 2, duration1, startTime2);
         epic1 = new Epic("TestName2", "TestDescription2", 3);
-        subtask1 = new Subtask("TestName8", "TestDescription8", 3, 4);
+        subtask1 = new Subtask("TestName8", "TestDescription8", 3, 4, duration1, startTime3);
         try (FileWriter writer = new FileWriter(testTmpFile)) {
             writer.write(String.format("%s\n", header));
             writer.write(String.format("%s\n", task1.toString()));
@@ -102,10 +119,10 @@ public class FileBackendTaskManagerTest {
 
     @Test
     public void loadTasksFromFileToManagerAddOtherTasks() {
-        task1 = new Task("TestName1", "TestDescription1", 1);
-        task2 = new Task("TestName4", "TestDescription4", 2);
+        task1 = new Task("TestName1", "TestDescription1", 1, duration1, startTime1);
+        task2 = new Task("TestName4", "TestDescription4", 2, duration1, startTime2);
         epic1 = new Epic("TestName2", "TestDescription2", 3);
-        subtask1 = new Subtask("TestName8", "TestDescription8", 3, 4);
+        subtask1 = new Subtask("TestName8", "TestDescription8", 3, 4, duration1, startTime3);
         try (FileWriter writer = new FileWriter(testTmpFile)) {
             writer.write(String.format("%s\n", header));
             writer.write(String.format("%s\n", task1.toString()));
@@ -117,10 +134,10 @@ public class FileBackendTaskManagerTest {
         }
 
         FileBackedTaskManager manager = FileBackedTaskManager.loadFromFile(testTmpFile);
-        Task task3 = new Task("TestName1", "TestDescription1");
-        Task task4 = new Task("TestName4", "TestDescription4");
+        Task task3 = new Task("TestName1", "TestDescription1", duration1, startTime4);
+        Task task4 = new Task("TestName4", "TestDescription4", duration1, startTime5);
         Epic epic4 = new Epic("TestName4", "TestDescription4");
-        Subtask subtask4 = new Subtask("TestName8", "TestDescription8", 7);
+        Subtask subtask4 = new Subtask("TestName8", "TestDescription8", 7, duration1, startTime6);
         manager.addTask(task3);
         manager.addTask(task4);
         manager.addEpic(epic4);
