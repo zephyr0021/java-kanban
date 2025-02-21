@@ -1,5 +1,7 @@
 package http;
 
+import com.google.gson.JsonParser;
+
 public enum Endpoint {
     GET_TASKS,
     GET_TASK,
@@ -20,19 +22,31 @@ public enum Endpoint {
     GET_PRIORITIZED,
     UNKNOWN_ENDPOINT;
 
-    public static Endpoint getEndpoint(String requestPath, String requestMethod) {
+    public static Endpoint getEndpoint(String requestPath, String requestMethod, String requestBody) {
         String[] pathParts = requestPath.split("/");
+        boolean hasId;
+        if (!requestBody.isEmpty()) {
+            hasId = JsonParser.parseString(requestBody).getAsJsonObject().has("id");
+        } else {
+            hasId = false;
+        }
+
         switch (pathParts[1]) {
             case "tasks" -> {
                 return switch (pathParts.length) {
                     case 2 -> switch (requestMethod) {
                         case "GET" -> GET_TASKS;
-                        case "POST" -> CREATE_TASK;
+                        case "POST" -> {
+                            if (hasId) {
+                                yield UPDATE_TASK;
+                            } else {
+                                yield CREATE_TASK;
+                            }
+                        }
                         default -> UNKNOWN_ENDPOINT;
                     };
                     case 3 -> switch (requestMethod) {
                         case "GET" -> GET_TASK;
-                        case "POST" -> UPDATE_TASK;
                         case "DELETE" -> DELETE_TASK;
                         default -> UNKNOWN_ENDPOINT;
                     };
@@ -43,12 +57,17 @@ public enum Endpoint {
                 return switch (pathParts.length) {
                     case 2 -> switch (requestMethod) {
                         case "GET" -> GET_SUBTASKS;
-                        case "POST" -> CREATE_SUBTASK;
+                        case "POST" -> {
+                            if (hasId) {
+                                yield UPDATE_SUBTASK;
+                            } else {
+                                yield CREATE_SUBTASK;
+                            }
+                        }
                         default -> UNKNOWN_ENDPOINT;
                     };
                     case 3 -> switch (requestMethod) {
                         case "GET" -> GET_SUBTASK;
-                        case "POST" -> UPDATE_SUBTASK;
                         case "DELETE" -> DELETE_SUBTASK;
                         default -> UNKNOWN_ENDPOINT;
                     };

@@ -3,6 +3,7 @@ package http.handler;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -40,6 +41,12 @@ public class BaseHttpHandler {
         httpExchange.sendResponseHeaders(404, 0);
         try (OutputStream os = httpExchange.getResponseBody()) {
             os.write("Такого эндпоинта не существует".getBytes(StandardCharsets.UTF_8));
+        }
+    }
+
+    protected String getRequestBody(HttpExchange httpExchange) throws IOException {
+        try (InputStream is = httpExchange.getRequestBody()) {
+            return new String(is.readAllBytes(), StandardCharsets.UTF_8);
         }
     }
 

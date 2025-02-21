@@ -1,5 +1,7 @@
 package managers;
 
+import exceptions.IntersectionException;
+import exceptions.NotFoundException;
 import statuses.StatusTask;
 import tasks.*;
 import util.Managers;
@@ -25,8 +27,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getTask(int id) {
+    public Task getTask(int id) throws NotFoundException {
         Task task = tasks.get(id);
+        if (task == null) {
+            throw new NotFoundException("Задача с указанным id не найдена");
+        }
         historyManager.add(task);
         return task;
     }
@@ -73,9 +78,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void addTask(Task task) {
+    public void addTask(Task task) throws IntersectionException {
         if (isIntersectionTaskTime(task)) {
-            System.out.println("Задача пересекается по времени с другими");
+            throw new IntersectionException("Задача пересекается с другими");
         } else if (task.getId() == 0) {
             do {
                 taskId++;
@@ -87,7 +92,7 @@ public class InMemoryTaskManager implements TaskManager {
             tasks.put(task.getId(), task);
             prioritizedTasks.add(task);
         } else {
-            System.out.println("Данные с таким id существуют в списке");
+            throw new IntersectionException("Задача пересекается с другими");
         }
     }
 
@@ -140,7 +145,11 @@ public class InMemoryTaskManager implements TaskManager {
 
 
     @Override
-    public void deleteTask(int id) {
+    public void deleteTask(int id) throws NotFoundException {
+        Task task = tasks.get(id);
+        if (task == null) {
+            throw new NotFoundException("Задача не найдена");
+        }
         prioritizedTasks.remove(tasks.get(id));
         tasks.remove(id);
         historyManager.remove(id);
@@ -203,11 +212,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateTask(Task task) {
+    public void updateTask(Task task) throws NotFoundException {
         int id = task.getId();
         if (tasks.get(id) == null) {
-            System.out.println("Не существует такой задачи");
-            return;
+            throw new NotFoundException("Не существует такой задачи");
         }
         prioritizedTasks.remove(tasks.get(id));
         prioritizedTasks.add(task);
