@@ -84,7 +84,7 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
         try {
             Epic epic = (jsonTaskBuilder.fromJson(requestBody, Epic.class));
             taskManager.addEpic(epic);
-            sendText(httpExchange, String.format("Эпик добавлен в список с id %d", epic.getId()));
+            sendTextUpdate(httpExchange, String.format("Эпик добавлен в список с id %d", epic.getId()));
         } catch (IntersectionException e) {
             sendHasInteractions(httpExchange, e.getMessage());
         } catch (NotFoundException e) {

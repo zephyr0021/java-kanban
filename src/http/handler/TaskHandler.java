@@ -71,7 +71,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
         try {
             Task task = (jsonTaskBuilder.fromJson(requestBody, Task.class));
             taskManager.addTask(task);
-            sendText(httpExchange, String.format("Задача добавлена в список с id %d", task.getId()));
+            sendTextUpdate(httpExchange, String.format("Задача добавлена в список с id %d", task.getId()));
         } catch (IntersectionException e) {
             sendHasInteractions(httpExchange, e.getMessage());
         }
@@ -81,7 +81,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
         try {
             Task task = (jsonTaskBuilder.fromJson(requestBody, Task.class));
             taskManager.updateTask(task);
-            sendText(httpExchange, String.format("Задача с id %d успешно обновлена", task.getId()));
+            sendTextUpdate(httpExchange, String.format("Задача с id %d успешно обновлена", task.getId()));
         } catch (IntersectionException e) {
             sendHasInteractions(httpExchange, e.getMessage());
         } catch (NotFoundException e) {

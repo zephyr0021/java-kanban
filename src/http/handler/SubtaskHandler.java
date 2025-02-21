@@ -71,7 +71,7 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
         try {
             Subtask subtask = (jsonTaskBuilder.fromJson(requestBody, Subtask.class));
             taskManager.addSubtask(subtask);
-            sendText(httpExchange, String.format("Подзадача добавлена в список с id %d", subtask.getId()));
+            sendTextUpdate(httpExchange, String.format("Подзадача добавлена в список с id %d", subtask.getId()));
         } catch (IntersectionException e) {
             sendHasInteractions(httpExchange, e.getMessage());
         } catch (NotFoundException e) {
@@ -83,7 +83,7 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
         try {
             Subtask subtask = (jsonTaskBuilder.fromJson(requestBody, Subtask.class));
             taskManager.updateSubtask(subtask);
-            sendText(httpExchange, String.format("Задача с id %d успешно обновлена", subtask.getId()));
+            sendTextUpdate(httpExchange, String.format("Задача с id %d успешно обновлена", subtask.getId()));
         } catch (IntersectionException e) {
             sendHasInteractions(httpExchange, e.getMessage());
         } catch (NotFoundException e) {

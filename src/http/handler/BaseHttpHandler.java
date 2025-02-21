@@ -19,6 +19,15 @@ public class BaseHttpHandler {
         }
     }
 
+    protected void sendTextUpdate(HttpExchange httpExchange, String text) throws IOException {
+        byte[] response = text.getBytes(StandardCharsets.UTF_8);
+        httpExchange.getResponseHeaders().set("Content-Type", "application/json");
+        httpExchange.sendResponseHeaders(201, response.length);
+        try (OutputStream os = httpExchange.getResponseBody()) {
+            os.write(response);
+        }
+    }
+
     protected void sendNotFound(HttpExchange httpExchange, String text) throws IOException {
         byte[] response = text.getBytes(StandardCharsets.UTF_8);
         httpExchange.getResponseHeaders().set("Content-Type", "application/json");
