@@ -32,6 +32,10 @@ public class HttpTaskServer {
         server.start();
     }
 
+    public void stop() {
+        server.stop(2);
+    }
+
     public static void main(String[] args) throws IOException {
         TaskManager manager = Managers.getDefault();
         manager.addTask(new Task("Выгулять собаку", "Погулять с Джеком 20 минут", Duration.ofMinutes(100), LocalDateTime.now()));
