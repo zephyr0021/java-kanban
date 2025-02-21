@@ -11,7 +11,7 @@ public class Task {
     protected String description;
     protected StatusTask status;
     protected int id;
-    protected TaskType type = TaskType.TASK;
+    protected transient TaskType type = TaskType.TASK;
     protected Duration duration;
     protected LocalDateTime startTime;
     protected LocalDateTime endTime;

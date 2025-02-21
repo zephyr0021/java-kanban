@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 public class BaseHttpHandler {
 
@@ -47,6 +48,15 @@ public class BaseHttpHandler {
     protected String getRequestBody(HttpExchange httpExchange) throws IOException {
         try (InputStream is = httpExchange.getRequestBody()) {
             return new String(is.readAllBytes(), StandardCharsets.UTF_8);
+        }
+    }
+
+    protected Optional<Integer> getTaskId(String path) {
+        String[] parts = path.split("/");
+        try {
+            return Optional.of(Integer.parseInt(parts[2]));
+        } catch (NumberFormatException e) {
+            return Optional.empty();
         }
     }
 

@@ -42,8 +42,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Subtask getSubtask(int id) {
+    public Subtask getSubtask(int id) throws NotFoundException {
         Subtask subtask = subtasks.get(id);
+        if (subtask == null) {
+            throw new NotFoundException("Подзадача с указанным id не найдена");
+        }
         historyManager.add(subtask);
         return subtask;
     }
@@ -97,10 +100,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void addSubtask(Subtask subtask) {
+    public void addSubtask(Subtask subtask) throws IntersectionException, NotFoundException {
         Epic epic = epics.get(subtask.getEpicId());
         if (isIntersectionTaskTime(subtask)) {
-            System.out.println("Подзадача пересекается по времени с другими");
+            throw new IntersectionException("Подзадача пересекается по времени с другими");
         } else if (epic != null) {
             if (subtask.getId() == 0) {
                 do {
@@ -119,10 +122,10 @@ public class InMemoryTaskManager implements TaskManager {
                 updateEpicStatus(subtask.getEpicId());
                 updateEpicTimeInfo(subtask.getEpicId());
             } else {
-                System.out.println("Данные с таким id существуют в списке");
+                throw new IntersectionException("Подзадача пересекается по времени с другими");
             }
         } else {
-            System.out.println("Эпик не существует. Подзадачу невозможно создать без эпика");
+            throw new NotFoundException("Эпика не существует. Задачу невозможно создать без эпика");
         }
     }
 

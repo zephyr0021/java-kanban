@@ -7,18 +7,18 @@ import exceptions.NotFoundException;
 import http.Endpoint;
 import http.json.JsonTaskBuilder;
 import managers.TaskManager;
-import tasks.Task;
+import tasks.Subtask;
 
 import java.io.IOException;
 import java.util.Optional;
 
-public class TaskHandler extends BaseHttpHandler implements HttpHandler {
+public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
 
     private final TaskManager taskManager;
 
     private final JsonTaskBuilder jsonTaskBuilder;
 
-    public TaskHandler(TaskManager taskManager) {
+    public SubtaskHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
         this.jsonTaskBuilder = new JsonTaskBuilder();
     }
@@ -30,58 +30,48 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
         String requestBody = getRequestBody(httpExchange);
         Endpoint endpoint = Endpoint.getEndpoint(path, httpExchange.getRequestMethod(), requestBody);
         switch (endpoint) {
-            case GET_TASKS:
-                handleGetTasks(httpExchange);
+            case GET_SUBTASKS:
+                handleGetSubtasks(httpExchange);
                 break;
-            case GET_TASK:
-                handleGetTask(httpExchange, path);
+            case GET_SUBTASK:
+                handleGetSubtask(httpExchange, path);
                 break;
-            case DELETE_TASK:
-                handleDeleteTask(httpExchange, path);
+            case DELETE_SUBTASK:
+                handleDeleteSubtask(httpExchange, path);
                 break;
-            case CREATE_TASK:
-                handleAddTask(httpExchange, requestBody);
+            case CREATE_SUBTASK:
+                handleAddSubtask(httpExchange, requestBody);
                 break;
-            case UPDATE_TASK:
-                handleUpdateTask(httpExchange, requestBody);
+            case UPDATE_SUBTASK:
+                handleUpdateSubtask(httpExchange, requestBody);
                 break;
             default:
                 sendEndpointNotFound(httpExchange);
         }
     }
 
-    private void handleGetTasks(HttpExchange httpExchange) throws IOException {
-        sendText(httpExchange, jsonTaskBuilder.toJson(taskManager.getTasks()));
+    private void handleGetSubtasks(HttpExchange httpExchange) throws IOException {
+        sendText(httpExchange, jsonTaskBuilder.toJson(taskManager.getSubtasks()));
     }
 
-    private void handleGetTask(HttpExchange httpExchange, String path) throws IOException {
+    private void handleGetSubtask(HttpExchange httpExchange, String path) throws IOException {
         Optional<Integer> taskId = getTaskId(path);
         if (taskId.isEmpty()) {
             sendEndpointNotFound(httpExchange);
             return;
         }
         try {
-            sendText(httpExchange, jsonTaskBuilder.toJson(taskManager.getTask(taskId.get())));
+            sendText(httpExchange, jsonTaskBuilder.toJson(taskManager.getSubtask(taskId.get())));
         } catch (NotFoundException e) {
             sendNotFound(httpExchange, e.getMessage());
         }
     }
 
-    private void handleAddTask(HttpExchange httpExchange, String requestBody) throws IOException {
+    private void handleAddSubtask(HttpExchange httpExchange, String requestBody) throws IOException {
         try {
-            Task task = (jsonTaskBuilder.fromJson(requestBody, Task.class));
-            taskManager.addTask(task);
-            sendText(httpExchange, String.format("Задача добавлена в список с id %d", task.getId()));
-        } catch (IntersectionException e) {
-            sendHasInteractions(httpExchange, e.getMessage());
-        }
-    }
-
-    private void handleUpdateTask(HttpExchange httpExchange, String requestBody) throws IOException {
-        try {
-            Task task = (jsonTaskBuilder.fromJson(requestBody, Task.class));
-            taskManager.updateTask(task);
-            sendText(httpExchange, String.format("Задача с id %d успешно обновлена", task.getId()));
+            Subtask subtask = (jsonTaskBuilder.fromJson(requestBody, Subtask.class));
+            taskManager.addSubtask(subtask);
+            sendText(httpExchange, String.format("Подзадача добавлена в список с id %d", subtask.getId()));
         } catch (IntersectionException e) {
             sendHasInteractions(httpExchange, e.getMessage());
         } catch (NotFoundException e) {
@@ -89,15 +79,27 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    private void handleDeleteTask(HttpExchange httpExchange, String path) throws IOException {
+    private void handleUpdateSubtask(HttpExchange httpExchange, String requestBody) throws IOException {
+        try {
+            Subtask subtask = (jsonTaskBuilder.fromJson(requestBody, Subtask.class));
+            taskManager.updateSubtask(subtask);
+            sendText(httpExchange, String.format("Задача с id %d успешно обновлена", subtask.getId()));
+        } catch (IntersectionException e) {
+            sendHasInteractions(httpExchange, e.getMessage());
+        } catch (NotFoundException e) {
+            sendNotFound(httpExchange, e.getMessage());
+        }
+    }
+
+    private void handleDeleteSubtask(HttpExchange httpExchange, String path) throws IOException {
         Optional<Integer> taskId = getTaskId(path);
         if (taskId.isEmpty()) {
             sendEndpointNotFound(httpExchange);
             return;
         }
         try {
-            taskManager.deleteTask(taskId.get());
-            sendText(httpExchange, "Задача успешно удалена");
+            taskManager.deleteSubtask(taskId.get());
+            sendText(httpExchange, "Подзадача успешно удалена");
         } catch (NotFoundException e) {
             sendNotFound(httpExchange, e.getMessage());
         }
