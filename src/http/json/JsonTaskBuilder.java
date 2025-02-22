@@ -22,6 +22,7 @@ public class JsonTaskBuilder {
                 .setPrettyPrinting()
                 .registerTypeAdapter(Task.class, new TaskDeserializer())
                 .registerTypeAdapter(Subtask.class, new SubtaskDeserializer())
+                .registerTypeAdapter(Epic.class, new EpicDeserializer())
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                 .registerTypeAdapter(Duration.class, new DurationAdapter())
                 .create();
