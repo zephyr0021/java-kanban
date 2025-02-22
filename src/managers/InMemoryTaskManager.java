@@ -57,8 +57,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Epic getEpic(int id) {
+    public Epic getEpic(int id) throws NotFoundException {
         Epic epic = epics.get(id);
+        if (epic == null) {
+            throw new NotFoundException("Эпик с указанным id не найден");
+        }
         historyManager.add(epic);
         return epic;
     }
@@ -130,9 +133,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void addEpic(Epic epic) {
+    public void addEpic(Epic epic) throws IntersectionException {
         if (isIntersectionTaskTime(epic)) {
-            System.out.println("Эпик пересекается по времени с другими");
+            throw new IntersectionException("Эпик пересекается с другими");
         } else if (epic.getId() == 0) {
             do {
                 taskId++;
@@ -142,7 +145,7 @@ public class InMemoryTaskManager implements TaskManager {
         } else if (!checkContainsAllTasks(epic)) {
             epics.put(epic.getId(), epic);
         } else {
-            System.out.println("Данные с таким id существуют в списке");
+            throw new IntersectionException("Эпик пересекается с другими");
         }
     }
 
