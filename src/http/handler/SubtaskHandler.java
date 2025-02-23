@@ -83,9 +83,7 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
         try {
             Subtask subtask = (jsonTaskBuilder.fromJson(requestBody, Subtask.class));
             taskManager.updateSubtask(subtask);
-            sendTextUpdate(httpExchange, String.format("Задача с id %d успешно обновлена", subtask.getId()));
-        } catch (IntersectionException e) {
-            sendHasInteractions(httpExchange, e.getMessage());
+            sendTextUpdate(httpExchange, String.format("Подзадача с id %d успешно обновлена", subtask.getId()));
         } catch (NotFoundException e) {
             sendNotFound(httpExchange, e.getMessage());
         }

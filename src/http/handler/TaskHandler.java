@@ -82,8 +82,6 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
             Task task = (jsonTaskBuilder.fromJson(requestBody, Task.class));
             taskManager.updateTask(task);
             sendTextUpdate(httpExchange, String.format("Задача с id %d успешно обновлена", task.getId()));
-        } catch (IntersectionException e) {
-            sendHasInteractions(httpExchange, e.getMessage());
         } catch (NotFoundException e) {
             sendNotFound(httpExchange, e.getMessage());
         }
