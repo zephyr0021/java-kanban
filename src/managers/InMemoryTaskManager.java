@@ -177,16 +177,17 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteEpic(int id) {
+    public void deleteEpic(int id) throws NotFoundException {
         Epic epic = epics.remove(id);
         historyManager.remove(id);
-        if (epic != null) {
-            epic.getSubtasks().forEach(subtaskId -> {
-                prioritizedTasks.remove(subtasks.get(subtaskId));
-                subtasks.remove(subtaskId);
-                historyManager.remove(subtaskId);
-            });
+        if (epic == null) {
+            throw new NotFoundException("Эпик не найден!");
         }
+        epic.getSubtasks().forEach(subtaskId -> {
+            prioritizedTasks.remove(subtasks.get(subtaskId));
+            subtasks.remove(subtaskId);
+            historyManager.remove(subtaskId);
+        });
     }
 
     @Override
