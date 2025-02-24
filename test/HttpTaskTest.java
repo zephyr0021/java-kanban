@@ -210,7 +210,33 @@ public class HttpTaskTest {
         Assertions.assertEquals("Задача не найдена", response.body());
     }
 
-    // TODO: Доделать тест
     @Test
-    public void EndpointNotFound() throws IOException, InterruptedException {}
+    public void EndpointNotFound() throws IOException, InterruptedException {
+        String taskJson = """
+                {
+                        "name": "Выгулять собаку",
+                        "description": "Погулять с Джеком 20 минут",
+                        "duration": "5",
+                        "startTime": "2025-02-04 10:00:00"
+                    }""";
+        HttpClient client = HttpClient.newHttpClient();
+        URI tasksNegativeUrl = URI.create("http://localhost:8080/tasksksks");
+        URI tasksNegativeGetUrl = URI.create("http://localhost:8080/tasksks/3rts");
+        HttpRequest request = HttpRequest.newBuilder().uri(tasksNegativeUrl).GET().build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        Assertions.assertEquals(404, response.statusCode());
+        Assertions.assertEquals("Такого эндпоинта не существует", response.body());
+        HttpRequest request2 = HttpRequest.newBuilder().uri(tasksNegativeUrl).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
+        HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
+        Assertions.assertEquals(404, response2.statusCode());
+        Assertions.assertEquals("Такого эндпоинта не существует", response.body());
+        HttpRequest request3 = HttpRequest.newBuilder().uri(tasksNegativeGetUrl).GET().build();
+        HttpResponse<String> response3 = client.send(request3, HttpResponse.BodyHandlers.ofString());
+        Assertions.assertEquals(404, response3.statusCode());
+        Assertions.assertEquals("Такого эндпоинта не существует", response.body());
+        HttpRequest request4 = HttpRequest.newBuilder().uri(tasksNegativeGetUrl).DELETE().build();
+        HttpResponse<String> response4 = client.send(request4, HttpResponse.BodyHandlers.ofString());
+        Assertions.assertEquals(404, response4.statusCode());
+        Assertions.assertEquals("Такого эндпоинта не существует", response.body());
+    }
 }

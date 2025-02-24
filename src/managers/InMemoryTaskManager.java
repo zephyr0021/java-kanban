@@ -106,7 +106,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void addSubtask(Subtask subtask) throws IntersectionException, NotFoundException {
         Epic epic = epics.get(subtask.getEpicId());
         if (isIntersectionTaskTime(subtask)) {
-            throw new IntersectionException("Подзадача пересекается по времени с другими");
+            throw new IntersectionException("Подзадача пересекается с другими");
         } else if (epic != null) {
             if (subtask.getId() == 0) {
                 do {
@@ -125,7 +125,7 @@ public class InMemoryTaskManager implements TaskManager {
                 updateEpicStatus(subtask.getEpicId());
                 updateEpicTimeInfo(subtask.getEpicId());
             } else {
-                throw new IntersectionException("Подзадача пересекается по времени с другими");
+                throw new IntersectionException("Подзадача пересекается с другими");
             }
         } else {
             throw new NotFoundException("Эпика не существует. Задачу невозможно создать без эпика");
@@ -162,14 +162,15 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteSubtask(int id) {
+    public void deleteSubtask(int id) throws NotFoundException {
         Subtask subtask = subtasks.get(id);
-        if (subtask != null) {
-            Epic epic = epics.get(subtask.getEpicId());
-            epic.removeSubtask(id);
-            updateEpicStatus(subtask.getEpicId());
-            updateEpicTimeInfo(subtask.getEpicId());
+        if (subtask == null) {
+            throw new NotFoundException("Подзадача не найдена!");
         }
+        Epic epic = epics.get(subtask.getEpicId());
+        epic.removeSubtask(id);
+        updateEpicStatus(subtask.getEpicId());
+        updateEpicTimeInfo(subtask.getEpicId());
         prioritizedTasks.remove(subtask);
         subtasks.remove(id);
         historyManager.remove(id);
@@ -229,11 +230,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateSubtask(Subtask subtask) {
+    public void updateSubtask(Subtask subtask) throws NotFoundException {
         int id = subtask.getId();
         if (subtasks.get(id) == null) {
-            System.out.println("Не существует такой подзадачи!");
-            return;
+            throw new NotFoundException("Не существует такой подзадачи!");
         }
         prioritizedTasks.remove(subtasks.get(id));
         prioritizedTasks.add(subtask);

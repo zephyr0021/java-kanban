@@ -151,7 +151,7 @@ public class HttpSubtaskTest {
     public void getSubtaskNotFound() throws IOException, InterruptedException {
         manager.addEpic(new Epic("test_epic", "descr"));
         manager.addSubtask(new Subtask("testTask", "testTaskDescr", 1, Duration.ofMinutes(5), startTime1));
-        subtaskUrl = URI.create("http://localhost:8080/tasks/3");
+        subtaskUrl = URI.create("http://localhost:8080/subtasks/3");
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder().uri(subtaskUrl).GET().build();
@@ -163,7 +163,26 @@ public class HttpSubtaskTest {
     }
 
     @Test
-    public void addTaskIntersection() throws IOException, InterruptedException {
+    public void addSubtaskEpicNotFound() throws IOException, InterruptedException {
+        String taskJson = """
+                {
+                        "name": "Выгулять собаку",
+                        "description": "Погулять с Джеком 20 минут",
+                        "epicId": "1",
+                        "duration": "5",
+                        "startTime": "2025-02-04 10:00:00"
+                    }""";
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder().uri(subtaskUrl).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        Assertions.assertEquals(404, response.statusCode());
+        Assertions.assertEquals("Эпика не существует. Задачу невозможно создать без эпика", response.body());
+    }
+
+    @Test
+    public void addSubtaskIntersection() throws IOException, InterruptedException {
         manager.addEpic(new Epic("test_epic", "descr"));
         manager.addSubtask(new Subtask("testTask", "testTaskDescr", 1, Duration.ofMinutes(5), startTime1));
         String taskJson = """
@@ -192,8 +211,8 @@ public class HttpSubtaskTest {
                         "name": "Выгулять собаку",
                         "description": "Погулять с Джеком 20 минут",
                         "status": "DONE",
-                        "epicId": "1",
                         "id": 50,
+                        "epicId": "1",
                         "type": "SUBTASK",
                         "duration": "100",
                         "startTime": "2025-02-21 15:45:01",
@@ -204,20 +223,48 @@ public class HttpSubtaskTest {
         HttpRequest request = HttpRequest.newBuilder().uri(subtaskUrl).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         Assertions.assertEquals(404, response.statusCode());
-        Assertions.assertEquals("Не существует такой подзадачи", response.body());
+        Assertions.assertEquals("Не существует такой подзадачи!", response.body());
     }
 
     @Test
     public void deleteNotFound() throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
-        subtaskUrl = URI.create("http://localhost:8080/tasks/3");
+        subtaskUrl = URI.create("http://localhost:8080/subtasks/3");
         HttpRequest request = HttpRequest.newBuilder().uri(subtaskUrl).DELETE().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         Assertions.assertEquals(404, response.statusCode());
-        Assertions.assertEquals("Подзадача не найдена", response.body());
+        Assertions.assertEquals("Подзадача не найдена!", response.body());
     }
 
-    // TODO: Доделать тест
     @Test
-    public void EndpointNotFound() throws IOException, InterruptedException {}
+    public void EndpointNotFound() throws IOException, InterruptedException {
+        String taskJson = """
+                {
+                        "name": "Выгулять собаку",
+                        "description": "Погулять с Джеком 20 минут",
+                        "epicId": "1",
+                        "duration": "5",
+                        "startTime": "2025-02-04 10:00:00"
+                    }""";
+        HttpClient client = HttpClient.newHttpClient();
+        URI subtaskNegativeUrl = URI.create("http://localhost:8080/subtasksdsds");
+        URI subtasksNegativeGetUrl = URI.create("http://localhost:8080/subtasks/3rts");
+        HttpRequest request = HttpRequest.newBuilder().uri(subtaskNegativeUrl).GET().build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        Assertions.assertEquals(404, response.statusCode());
+        Assertions.assertEquals("Такого эндпоинта не существует", response.body());
+        HttpRequest request2 = HttpRequest.newBuilder().uri(subtaskNegativeUrl).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
+        HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
+        Assertions.assertEquals(404, response2.statusCode());
+        Assertions.assertEquals("Такого эндпоинта не существует", response.body());
+        HttpRequest request3 = HttpRequest.newBuilder().uri(subtasksNegativeGetUrl).GET().build();
+        HttpResponse<String> response3 = client.send(request3, HttpResponse.BodyHandlers.ofString());
+        Assertions.assertEquals(404, response3.statusCode());
+        Assertions.assertEquals("Такого эндпоинта не существует", response.body());
+        HttpRequest request4 = HttpRequest.newBuilder().uri(subtasksNegativeGetUrl).DELETE().build();
+        HttpResponse<String> response4 = client.send(request4, HttpResponse.BodyHandlers.ofString());
+        Assertions.assertEquals(404, response4.statusCode());
+        Assertions.assertEquals("Такого эндпоинта не существует", response.body());
+
+    }
 }
