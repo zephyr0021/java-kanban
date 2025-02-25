@@ -133,8 +133,8 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
     }
 
     private void handleDeleteEpic(HttpExchange httpExchange, String path) {
-        getTaskId(path).
-                ifPresentOrElse(
+        getTaskId(path)
+                .ifPresentOrElse(
                         taskId -> {
                             try {
                                 taskManager.deleteEpic(taskId);

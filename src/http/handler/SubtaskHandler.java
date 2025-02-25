@@ -110,8 +110,8 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
     }
 
     private void handleDeleteSubtask(HttpExchange httpExchange, String path) {
-        getTaskId(path).
-                ifPresentOrElse(
+        getTaskId(path)
+                .ifPresentOrElse(
                         taskId -> {
                             try {
                                 taskManager.deleteSubtask(taskId);

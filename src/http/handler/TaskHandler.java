@@ -108,8 +108,8 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
     }
 
     private void handleDeleteTask(HttpExchange httpExchange, String path) {
-        getTaskId(path).
-                ifPresentOrElse(
+        getTaskId(path)
+                .ifPresentOrElse(
                         taskId -> {
                             try {
                                 taskManager.deleteTask(taskId);
