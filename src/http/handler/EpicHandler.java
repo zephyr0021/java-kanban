@@ -54,30 +54,70 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
         sendText(httpExchange, jsonTaskBuilder.toJson(taskManager.getEpics()));
     }
 
-    private void handleGetEpic(HttpExchange httpExchange, String path) throws IOException {
-        Optional<Integer> taskId = getTaskId(path);
-        if (taskId.isEmpty()) {
-            sendEndpointNotFound(httpExchange);
-            return;
-        }
-        try {
-            sendText(httpExchange, jsonTaskBuilder.toJson(taskManager.getEpic(taskId.get())));
-        } catch (NotFoundException e) {
-            sendNotFound(httpExchange, e.getMessage());
-        }
+    private void handleGetEpic(HttpExchange httpExchange, String path) {
+        getTaskId(path)
+                .map(taskId -> {
+                    try {
+                        return taskManager.getEpic(taskId);
+                    } catch (NotFoundException e) {
+                        try {
+                            sendNotFound(httpExchange, e.getMessage());
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                    return Optional.empty();
+                })
+                .map(jsonTaskBuilder::toJson)
+                .ifPresentOrElse(
+                        json -> {
+                            try {
+                                sendText(httpExchange, json);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        },
+                        () -> {
+                            try {
+                                sendEndpointNotFound(httpExchange);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                );
     }
 
-    private void handleGetEpicSubtasks(HttpExchange httpExchange, String path) throws IOException {
-        Optional<Integer> taskId = getTaskId(path);
-        if (taskId.isEmpty()) {
-            sendEndpointNotFound(httpExchange);
-            return;
-        }
-        try {
-            sendText(httpExchange, jsonTaskBuilder.toJson(taskManager.getEpicSubtasks(taskId.get())));
-        } catch (NotFoundException e) {
-            sendNotFound(httpExchange, e.getMessage());
-        }
+    private void handleGetEpicSubtasks(HttpExchange httpExchange, String path) {
+        getTaskId(path)
+                .map(taskId -> {
+                    try {
+                        return taskManager.getEpicSubtasks(taskId);
+                    } catch (NotFoundException e) {
+                        try {
+                            sendNotFound(httpExchange, e.getMessage());
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                    return Optional.empty();
+                })
+                .map(jsonTaskBuilder::toJson)
+                .ifPresentOrElse(
+                        json -> {
+                            try {
+                                sendText(httpExchange, json);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        },
+                        () -> {
+                            try {
+                                sendEndpointNotFound(httpExchange);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                );
     }
 
     private void handleAddEpic(HttpExchange httpExchange, String requestBody) throws IOException {
@@ -92,18 +132,30 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    private void handleDeleteEpic(HttpExchange httpExchange, String path) throws IOException {
-        Optional<Integer> taskId = getTaskId(path);
-        if (taskId.isEmpty()) {
-            sendEndpointNotFound(httpExchange);
-            return;
-        }
-        try {
-            taskManager.deleteEpic(taskId.get());
-            sendText(httpExchange, "Эпик успешно удален");
-        } catch (NotFoundException e) {
-            sendNotFound(httpExchange, e.getMessage());
-        }
+    private void handleDeleteEpic(HttpExchange httpExchange, String path) {
+        getTaskId(path).
+                ifPresentOrElse(
+                        taskId -> {
+                            try {
+                                taskManager.deleteEpic(taskId);
+                                sendText(httpExchange, "Эпик успешно удален");
+                            } catch (NotFoundException | IOException e) {
+                                try {
+                                    sendNotFound(httpExchange, e.getMessage());
+                                } catch (IOException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            }
+
+                        },
+                        () -> {
+                            try {
+                                sendEndpointNotFound(httpExchange);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                );
     }
 
 }

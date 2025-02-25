@@ -54,17 +54,37 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
         sendText(httpExchange, jsonTaskBuilder.toJson(taskManager.getTasks()));
     }
 
-    private void handleGetTask(HttpExchange httpExchange, String path) throws IOException {
-        Optional<Integer> taskId = getTaskId(path);
-        if (taskId.isEmpty()) {
-            sendEndpointNotFound(httpExchange);
-            return;
-        }
-        try {
-            sendText(httpExchange, jsonTaskBuilder.toJson(taskManager.getTask(taskId.get())));
-        } catch (NotFoundException e) {
-            sendNotFound(httpExchange, e.getMessage());
-        }
+    private void handleGetTask(HttpExchange httpExchange, String path) {
+        getTaskId(path)
+                .map(taskId -> {
+                    try {
+                        return taskManager.getTask(taskId);
+                    } catch (NotFoundException e) {
+                        try {
+                            sendNotFound(httpExchange, e.getMessage());
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                    return Optional.empty();
+                })
+                .map(jsonTaskBuilder::toJson)
+                .ifPresentOrElse(
+                        json -> {
+                            try {
+                                sendText(httpExchange, json);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        },
+                        () -> {
+                            try {
+                                sendEndpointNotFound(httpExchange);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                );
     }
 
     private void handleAddTask(HttpExchange httpExchange, String requestBody) throws IOException {
@@ -87,18 +107,30 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    private void handleDeleteTask(HttpExchange httpExchange, String path) throws IOException {
-        Optional<Integer> taskId = getTaskId(path);
-        if (taskId.isEmpty()) {
-            sendEndpointNotFound(httpExchange);
-            return;
-        }
-        try {
-            taskManager.deleteTask(taskId.get());
-            sendText(httpExchange, "Задача успешно удалена");
-        } catch (NotFoundException e) {
-            sendNotFound(httpExchange, e.getMessage());
-        }
+    private void handleDeleteTask(HttpExchange httpExchange, String path) {
+        getTaskId(path).
+                ifPresentOrElse(
+                        taskId -> {
+                            try {
+                                taskManager.deleteTask(taskId);
+                                sendText(httpExchange, "Задача успешно удалена");
+                            } catch (NotFoundException | IOException e) {
+                                try {
+                                    sendNotFound(httpExchange, e.getMessage());
+                                } catch (IOException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            }
+
+                        },
+                        () -> {
+                            try {
+                                sendEndpointNotFound(httpExchange);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                );
     }
 
 }

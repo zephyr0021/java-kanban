@@ -54,17 +54,37 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
         sendText(httpExchange, jsonTaskBuilder.toJson(taskManager.getSubtasks()));
     }
 
-    private void handleGetSubtask(HttpExchange httpExchange, String path) throws IOException {
-        Optional<Integer> taskId = getTaskId(path);
-        if (taskId.isEmpty()) {
-            sendEndpointNotFound(httpExchange);
-            return;
-        }
-        try {
-            sendText(httpExchange, jsonTaskBuilder.toJson(taskManager.getSubtask(taskId.get())));
-        } catch (NotFoundException e) {
-            sendNotFound(httpExchange, e.getMessage());
-        }
+    private void handleGetSubtask(HttpExchange httpExchange, String path) {
+        getTaskId(path)
+                .map(taskId -> {
+                    try {
+                        return taskManager.getSubtask(taskId);
+                    } catch (NotFoundException e) {
+                        try {
+                            sendNotFound(httpExchange, e.getMessage());
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                    return Optional.empty();
+                })
+                .map(jsonTaskBuilder::toJson)
+                .ifPresentOrElse(
+                        json -> {
+                            try {
+                                sendText(httpExchange, json);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        },
+                        () -> {
+                            try {
+                                sendEndpointNotFound(httpExchange);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                );
     }
 
     private void handleAddSubtask(HttpExchange httpExchange, String requestBody) throws IOException {
@@ -89,18 +109,30 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    private void handleDeleteSubtask(HttpExchange httpExchange, String path) throws IOException {
-        Optional<Integer> taskId = getTaskId(path);
-        if (taskId.isEmpty()) {
-            sendEndpointNotFound(httpExchange);
-            return;
-        }
-        try {
-            taskManager.deleteSubtask(taskId.get());
-            sendText(httpExchange, "Подзадача успешно удалена");
-        } catch (NotFoundException e) {
-            sendNotFound(httpExchange, e.getMessage());
-        }
+    private void handleDeleteSubtask(HttpExchange httpExchange, String path) {
+        getTaskId(path).
+                ifPresentOrElse(
+                        taskId -> {
+                            try {
+                                taskManager.deleteSubtask(taskId);
+                                sendText(httpExchange, "Подзадача успешно удалена");
+                            } catch (NotFoundException | IOException e) {
+                                try {
+                                    sendNotFound(httpExchange, e.getMessage());
+                                } catch (IOException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            }
+
+                        },
+                        () -> {
+                            try {
+                                sendEndpointNotFound(httpExchange);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                );
     }
 
 }
