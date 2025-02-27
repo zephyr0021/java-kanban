@@ -10,7 +10,6 @@ import managers.TaskManager;
 import tasks.Epic;
 
 import java.io.IOException;
-import java.util.Optional;
 
 public class EpicHandler extends BaseHttpHandler implements HttpHandler {
 
@@ -56,67 +55,19 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
 
     private void handleGetEpic(HttpExchange httpExchange, String path) {
         getTaskId(path)
-                .map(taskId -> {
-                    try {
-                        return taskManager.getEpic(taskId);
-                    } catch (NotFoundException e) {
-                        try {
-                            sendNotFound(httpExchange, e.getMessage());
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                    }
-                    return Optional.empty();
-                })
+                .map(taskId -> tryGetTask(httpExchange, () -> taskManager.getEpic(taskId)))
                 .map(jsonTaskBuilder::toJson)
-                .ifPresentOrElse(
-                        json -> {
-                            try {
-                                sendText(httpExchange, json);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        },
-                        () -> {
-                            try {
-                                sendEndpointNotFound(httpExchange);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
+                .ifPresentOrElse(json -> catchIOException(() -> sendText(httpExchange, json)),
+                        () -> catchIOException(() -> sendEndpointNotFound(httpExchange))
                 );
     }
 
     private void handleGetEpicSubtasks(HttpExchange httpExchange, String path) {
         getTaskId(path)
-                .map(taskId -> {
-                    try {
-                        return taskManager.getEpicSubtasks(taskId);
-                    } catch (NotFoundException e) {
-                        try {
-                            sendNotFound(httpExchange, e.getMessage());
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                    }
-                    return Optional.empty();
-                })
+                .map(taskId -> tryGetTask(httpExchange, () -> taskManager.getEpicSubtasks(taskId)))
                 .map(jsonTaskBuilder::toJson)
-                .ifPresentOrElse(
-                        json -> {
-                            try {
-                                sendText(httpExchange, json);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        },
-                        () -> {
-                            try {
-                                sendEndpointNotFound(httpExchange);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
+                .ifPresentOrElse(json -> catchIOException(() -> sendText(httpExchange, json)),
+                        () -> catchIOException(() -> sendEndpointNotFound(httpExchange))
                 );
     }
 
@@ -138,24 +89,12 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
                         taskId -> {
                             try {
                                 taskManager.deleteEpic(taskId);
-                                sendText(httpExchange, "Эпик успешно удален");
-                            } catch (NotFoundException | IOException e) {
-                                try {
-                                    sendNotFound(httpExchange, e.getMessage());
-                                } catch (IOException ex) {
-                                    throw new RuntimeException(ex);
-                                }
+                                catchIOException(() -> sendText(httpExchange, "Эпик успешно удален"));
+                            } catch (NotFoundException e) {
+                                catchIOException(() -> sendNotFound(httpExchange, e.getMessage()));
                             }
 
-                        },
-                        () -> {
-                            try {
-                                sendEndpointNotFound(httpExchange);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                );
+                        }, () -> catchIOException(() -> sendEndpointNotFound(httpExchange)));
     }
 
 }

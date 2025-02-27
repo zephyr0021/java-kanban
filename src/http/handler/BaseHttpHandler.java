@@ -1,6 +1,7 @@
 package http.handler;
 
 import com.sun.net.httpserver.HttpExchange;
+import exceptions.NotFoundException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,5 +69,38 @@ public class BaseHttpHandler {
             return Optional.empty();
         }
     }
+
+    protected void catchIOException (FailableCallable f) {
+        try {
+            f.call();
+        } catch (Exception e) {
+            if (e instanceof IOException) {
+                throw new RuntimeException(e);
+            } else {
+                throw new RuntimeException("RuntimeException error");
+            }
+        }
+    }
+
+    protected Object tryGetTask(HttpExchange httpExchange, TaskCallable f) {
+        try {
+            return f.call();
+        } catch (NotFoundException e) {
+            catchIOException(() -> sendNotFound(httpExchange, e.getMessage()));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return Optional.empty();
+    }
+
+    protected interface FailableCallable {
+        void call() throws Exception;
+    }
+
+    protected interface TaskCallable {
+        Object call() throws Exception;
+    }
+
+
 
 }

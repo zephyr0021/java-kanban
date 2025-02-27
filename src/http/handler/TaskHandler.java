@@ -10,7 +10,6 @@ import managers.TaskManager;
 import tasks.Task;
 
 import java.io.IOException;
-import java.util.Optional;
 
 public class TaskHandler extends BaseHttpHandler implements HttpHandler {
 
@@ -56,34 +55,10 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
 
     private void handleGetTask(HttpExchange httpExchange, String path) {
         getTaskId(path)
-                .map(taskId -> {
-                    try {
-                        return taskManager.getTask(taskId);
-                    } catch (NotFoundException e) {
-                        try {
-                            sendNotFound(httpExchange, e.getMessage());
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                    }
-                    return Optional.empty();
-                })
+                .map(taskId -> tryGetTask(httpExchange, () -> taskManager.getTask(taskId)))
                 .map(jsonTaskBuilder::toJson)
-                .ifPresentOrElse(
-                        json -> {
-                            try {
-                                sendText(httpExchange, json);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        },
-                        () -> {
-                            try {
-                                sendEndpointNotFound(httpExchange);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
+                .ifPresentOrElse(json -> catchIOException(() -> sendText(httpExchange, json)),
+                        () -> catchIOException(() -> sendEndpointNotFound(httpExchange))
                 );
     }
 
@@ -113,24 +88,12 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
                         taskId -> {
                             try {
                                 taskManager.deleteTask(taskId);
-                                sendText(httpExchange, "Задача успешно удалена");
-                            } catch (NotFoundException | IOException e) {
-                                try {
-                                    sendNotFound(httpExchange, e.getMessage());
-                                } catch (IOException ex) {
-                                    throw new RuntimeException(ex);
-                                }
+                                catchIOException(() -> sendText(httpExchange, "Задача успешно удалена"));
+                            } catch (NotFoundException e) {
+                                catchIOException(() -> sendNotFound(httpExchange, e.getMessage()));
                             }
 
-                        },
-                        () -> {
-                            try {
-                                sendEndpointNotFound(httpExchange);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                );
+                        }, () -> catchIOException(() -> sendEndpointNotFound(httpExchange)));
     }
 
 }
