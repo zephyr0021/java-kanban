@@ -70,7 +70,7 @@ public class BaseHttpHandler {
         }
     }
 
-    protected void catchIOException (FailableCallable f) {
+    protected void catchIOException(FailableCallable f) {
         try {
             f.call();
         } catch (Exception e) {
