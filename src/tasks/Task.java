@@ -11,10 +11,10 @@ public class Task {
     protected String description;
     protected StatusTask status;
     protected int id;
-    protected TaskType type = TaskType.TASK;
-    protected Duration duration;
-    protected LocalDateTime startTime;
-    protected LocalDateTime endTime;
+    protected transient TaskType type = TaskType.TASK;
+    protected Duration duration = Duration.ZERO;
+    protected LocalDateTime startTime = LocalDateTime.of(0, 1, 1, 0, 0);
+    protected LocalDateTime endTime = LocalDateTime.of(0, 1, 1, 0, 0);
 
     public Task(String name, String description, StatusTask status, int id, Duration duration, LocalDateTime startTime) {
         this.name = name;

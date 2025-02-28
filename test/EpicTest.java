@@ -70,7 +70,7 @@ public class EpicTest {
 
     @Test
     void epicToString() {
-        Assertions.assertEquals("1,EPIC,TestEpic,NEW,TestDescription,,null,null,null", epic.toString());
+        Assertions.assertEquals("1,EPIC,TestEpic,NEW,TestDescription,,PT0S,0000-01-01T00:00,0000-01-01T00:00", epic.toString());
     }
 
     @Test
